@@ -1,0 +1,6 @@
+{
+  "name": "Leadr — AI Crisis Decision Simulator",
+  "description": "Simulasi pengambilan keputusan konflik dan krisis organisasi mahasiswa berbasis AI untuk melatih kepemimpinan nyata.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
