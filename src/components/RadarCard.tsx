@@ -5,40 +5,34 @@ interface RadarCardProps {
   avg: Record<Dim, number>;
 }
 
-const DIM_META: Record<Dim, { label: string; description: string; color: string }> = {
+const DIM_META: Record<Dim, { label: string; description: string }> = {
   komunikasi: {
     label: "Komunikasi",
     description: "Kejelasan, active listening & transparansi alasan",
-    color: "#3b82f6", // blue-500
   },
   empati: {
     label: "Empati / EQ",
     description: "Pengakuan beban mental & dukungan moril anggota",
-    color: "#ec4899", // pink-500
   },
   ketegasan: {
     label: "Ketegasan",
     description: "Ketepatan waktu, batasan jelas & tidak menghindar",
-    color: "#f59e0b", // amber-500
   },
   krisis: {
     label: "Manajemen Krisis",
     description: "Prioritas realistis & kontingensi risiko demo",
-    color: "#10b981", // emerald-500
   },
 };
 
 const DIMS: Dim[] = ["komunikasi", "empati", "ketegasan", "krisis"];
 
 export default function RadarCard({ avg }: RadarCardProps) {
-  const size = 320;
+  const size = 300;
   const center = size / 2;
   const radius = size * 0.38;
   const levels = [2, 4, 6, 8, 10];
 
-  // Helper to compute coordinate for a given index and value (0 - 10)
   const getPoint = (index: number, val: number) => {
-    // 4 dimensions: angles at -90deg, 0deg, 90deg, 180deg
     const angle = (Math.PI * 2 * index) / 4 - Math.PI / 2;
     const r = (val / 10) * radius;
     return {
@@ -53,17 +47,22 @@ export default function RadarCard({ avg }: RadarCardProps) {
   }).join(" ");
 
   return (
-    <div className="flex flex-col items-center rounded-lg border border-slate-200 bg-white p-5 shadow-xs">
+    <div className="surface-card flex flex-col items-center rounded-lg p-5">
       <div className="mb-2 flex w-full items-center justify-between">
-        <h3 className="text-sm font-bold text-slate-900">Profil Kepemimpinan 4 Dimensi</h3>
-        <span className="rounded-md border border-blue-200 bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700">
+        <h3 className="type-subhead text-slate-900">Profil Kepemimpinan 4 Dimensi</h3>
+        <span className="type-meta rounded-sm border border-blue-200 bg-blue-50 px-2 py-0.5 font-semibold text-blue-700">
           Skor Rata-Rata (1-10)
         </span>
       </div>
 
       <div className="relative flex items-center justify-center py-2">
-        <svg width={size} height={size} className="overflow-visible">
-          {/* Concentric grid circles / polygons */}
+        <svg
+          width={size}
+          height={size}
+          className="overflow-visible"
+          role="img"
+          aria-label="Grafik Radar 4 Dimensi Kepemimpinan"
+        >
           {levels.map((lvl) => {
             const levelPoints = DIMS.map((_, i) => {
               const pt = getPoint(i, lvl);
@@ -82,8 +81,8 @@ export default function RadarCard({ avg }: RadarCardProps) {
                 <text
                   x={center + 4}
                   y={center - (lvl / 10) * radius + 4}
-                  fontSize="9"
-                  fill="#94a3b8"
+                  fontSize="11"
+                  fill="#475569"
                   className="select-none font-mono"
                 >
                   {lvl}
@@ -92,7 +91,6 @@ export default function RadarCard({ avg }: RadarCardProps) {
             );
           })}
 
-          {/* Radial Axis Lines */}
           {DIMS.map((_, i) => {
             const outer = getPoint(i, 10);
             return (
@@ -108,18 +106,16 @@ export default function RadarCard({ avg }: RadarCardProps) {
             );
           })}
 
-          {/* Player Polygon */}
           <polygon
             points={polygonPoints}
             fill="#2563eb"
-            fillOpacity="0.18"
+            fillOpacity="0.16"
             stroke="#2563eb"
             strokeWidth="2"
             strokeLinejoin="round"
             className="transition-all duration-500"
           />
 
-          {/* Points on vertices */}
           {DIMS.map((dim, i) => {
             const val = avg[dim] || 1;
             const pt = getPoint(i, val);
@@ -141,22 +137,22 @@ export default function RadarCard({ avg }: RadarCardProps) {
       </div>
 
       {/* Dimension breakdown cards */}
-      <div className="mt-3 grid w-full grid-cols-2 gap-2 text-xs">
+      <div className="mt-3 grid w-full grid-cols-2 gap-2">
         {DIMS.map((dim) => {
           const meta = DIM_META[dim];
           const val = avg[dim] || 0;
           return (
             <div
               key={dim}
-              className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/80 p-2.5 transition-colors hover:bg-slate-100/80"
+              className="flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 p-2.5 transition-colors hover:bg-slate-100"
             >
-              <div>
-                <div className="font-semibold text-slate-800">{meta.label}</div>
-                <div className="line-clamp-1 text-[10px] text-slate-500">
+              <div className="min-w-0">
+                <div className="type-meta font-semibold text-slate-900">{meta.label}</div>
+                <div className="type-meta line-clamp-1 text-slate-600">
                   {meta.description}
                 </div>
               </div>
-              <div className="ml-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white font-mono text-sm font-black text-blue-600 shadow-xs border border-slate-200">
+              <div className="type-body ml-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-slate-200 bg-white font-mono font-bold text-blue-600">
                 {val.toFixed(1)}
               </div>
             </div>

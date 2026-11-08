@@ -37,6 +37,21 @@ Kamu mengevaluasi instruksi seorang Ketua Tim / Project Lead dalam berbagai sken
 - ketegasan: Mengambil keputusan konkret, membagi tanggung jawab jelas, bertenggat waktu, tidak lari dari tanggung jawab.
 - krisis: Mitigasi risiko, rencana darurat (Plan B), prioritas realistis agar proyek/organisasi bisa tuntas menuju 100%.
 
+# Ekstraksi Indikator Perilaku Ilmiah Tambahan (Walsh et al., 2025 & Arthur et al., 2003/2008):
+Selain penilaian di atas, bertindaklah sebagai Behavioral Auditor objektif untuk mengisi array extracted_features. Deteksi apakah respons ketua memuat bukti tekstual eksplisit dari indikator berikut (present: true/false, beserta kutipan kalimat di evidence):
+- CRISIS_TRIAGE (Positif - Krisis): Menentukan prioritas penanganan mitigasi teknis atau rencana kontingensi (Plan B).
+- RISK_CONTAINMENT (Positif - Krisis): Mengamankan deliverable utama agar tidak lumpuh akibat hambatan sebagian komponen.
+- PASSIVE_BLAME (Negatif - Krisis): Panik, lepas tangan, atau langsung menyalahkan tim tanpa instruksi penyelesaian.
+- CLEAR_DELEGATION (Positif - Komunikasi): Memberikan instruksi jelas dengan target PIC/peran spesifik.
+- TRANSPARENT_CONTEXT (Positif - Komunikasi): Menyampaikan alasan keputusan atau update status informasi secara transparan.
+- VAGUE_INSTRUCTION (Negatif - Komunikasi): Respons ambigu, sangat pendek tanpa arahan operasional, atau membingungkan.
+- CHECK_WELLBEING (Positif - Empati): Mengakui kelelahan fisik/mental tim, menawarkan istirahat atau bantuan sumber daya.
+- PSYCHOLOGICAL_SAFETY (Positif - Empati): Menenangkan kepanikan tim dan menjaga ruang aman tanpa mempermalukan anggota.
+- HOSTILE_DISMISSAL (Negatif - Empati): Meremehkan kelelahan tim atau menggunakan bahasa kasar/merendahkan.
+- TAKE_ACCOUNTABILITY (Positif - Ketegasan): Mengambil keputusan final dan berani memikul tanggung jawab komunikasi eksternal.
+- TIMEBOUND_CHECKPOINT (Positif - Ketegasan): Menetapkan tenggat waktu (jam/hari) atau checkpoint evaluasi tegas.
+- AVOIDANT_DELAY (Negatif - Ketegasan): Menunda keputusan krusial atau membiarkan konflik menggantung tanpa kepastian.
+
 Format balasan: Balas HANYA dengan satu JSON object valid sesuai schema.`;
 
 export function evaluatorUserPrompt(

@@ -95,6 +95,56 @@ export interface Scenario {
   isRare?: boolean;
 }
 
+/**
+ * Scientific Behavioral Indicator (Walsh et al., 2025 & Arthur et al., 2003/2008)
+ * Used purely as an additional objective evaluation layer.
+ */
+export type BehavioralIndicatorId =
+  | "CRISIS_TRIAGE"
+  | "RISK_CONTAINMENT"
+  | "PASSIVE_BLAME"
+  | "CLEAR_DELEGATION"
+  | "TRANSPARENT_CONTEXT"
+  | "VAGUE_INSTRUCTION"
+  | "CHECK_WELLBEING"
+  | "PSYCHOLOGICAL_SAFETY"
+  | "HOSTILE_DISMISSAL"
+  | "TAKE_ACCOUNTABILITY"
+  | "TIMEBOUND_CHECKPOINT"
+  | "AVOIDANT_DELAY";
+
+export interface ExtractedBehavioralFeature {
+  indicator_id: BehavioralIndicatorId;
+  label: string;
+  dimension: Dim;
+  polarity: "positive" | "negative";
+  weight: number; // e.g., +25, +20, -30, -15
+  present: boolean;
+  evidence: string | null;
+}
+
+export interface TurnScientificEvaluation {
+  scenario_id: string;
+  base_score: number; // Default 60
+  dimension_scores: Record<Dim, number>; // 0-100 deterministic score per dimension
+  dimension_deltas: Record<Dim, number>; // net +/- from extracted indicators
+  composite_bars_score: number; // 0-100 average across the 4 Arthur et al. dimensions
+  extracted_features: ExtractedBehavioralFeature[];
+  objective_feedback: string[];
+  anti_gaming_triggered?: boolean;
+}
+
+export interface CumulativeScientificReport {
+  overall_bars_score: number; // 0-100 deterministic composite
+  base_score: number;
+  dimension_averages: Record<Dim, number>; // 0-100 per dimension
+  total_positive_indicators: number;
+  total_negative_indicators: number;
+  construct_validity_note: string;
+  objective_summary: string[];
+  turn_evaluations: TurnScientificEvaluation[];
+}
+
 export interface StartResponse {
   session_id: string;
   domain: DomainType;
@@ -117,6 +167,7 @@ export interface RespondResponse {
   active_model?: string;
   fallback_model_used?: boolean;
   tagged_actors?: string[];
+  scientific_eval?: TurnScientificEvaluation;
 }
 
 export interface NextResponse {
@@ -134,6 +185,7 @@ export interface HistoryEntry {
   rationale: Record<string, string>;
   state_after: TeamState;
   timestamp: string;
+  scientific_eval?: TurnScientificEvaluation;
 }
 
 export type OutcomeCode =
@@ -159,6 +211,7 @@ export interface FinalScoreBreakdown {
     scores: Scores;
     avgScore: number;
     rationale: Record<string, string>;
+    scientific_eval?: TurnScientificEvaluation;
   }>;
   cumulativeMetrics: {
     totalTurns: number;
@@ -184,6 +237,7 @@ export interface ResultResponse {
   history: HistoryEntry[];
   totalTurns: number;
   finalScore: FinalScoreBreakdown;
+  scientific_report?: CumulativeScientificReport;
 }
 
 export interface SimulationHistoryRecord {
@@ -203,5 +257,5 @@ export interface SimulationHistoryRecord {
   finalTrust: number;
   history: HistoryEntry[];
   narrative: string;
+  scientific_report?: CumulativeScientificReport;
 }
-

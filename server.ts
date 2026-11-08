@@ -24,6 +24,7 @@ import {
   calculateFinalScore,
   OUTCOME_TITLES,
 } from "./src/server/engine.js";
+import { aggregateScientificReport } from "./src/server/scientificScoring.js";
 import {
   evaluatePlayerResponse,
   generateOutcomeNarrative,
@@ -165,6 +166,7 @@ async function bootstrap() {
         rationale: evaluation.rationale,
         state_after: newState,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        scientific_eval: evaluation.scientific_eval,
       });
 
       // Append to active transcript
@@ -190,6 +192,7 @@ async function bootstrap() {
         active_model: evaluation.active_model,
         fallback_model_used: evaluation.fallback_model_used,
         tagged_actors: evaluation.tagged_actors,
+        scientific_eval: evaluation.scientific_eval,
       };
 
       res.json(response);
@@ -253,6 +256,7 @@ async function bootstrap() {
       const avg = averageScores(session.history);
       const weakest = weakestDimension(avg);
       const finalScore = calculateFinalScore(session.state, session.history, session.domain);
+      const scientificReport = aggregateScientificReport(session.history);
 
       const debrief = await generateOutcomeNarrative(
         outcomeCode,
@@ -276,6 +280,7 @@ async function bootstrap() {
         history: session.history,
         totalTurns: session.history.length,
         finalScore,
+        scientific_report: scientificReport,
       };
 
       session.result = finalResult;
@@ -305,6 +310,7 @@ async function bootstrap() {
         finalTrust: session.state.trust,
         history: session.history,
         narrative: debrief.narrative,
+        scientific_report: scientificReport,
       };
 
       recordHistory(historyRecord);

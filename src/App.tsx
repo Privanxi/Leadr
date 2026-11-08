@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, Component, ErrorInfo, ReactNode } from "react";
 import { api } from "./api";
 import {
   ChatMessage,
@@ -16,10 +16,67 @@ import ChatPanel from "./components/ChatPanel";
 import StatePanel from "./components/StatePanel";
 import ResultScreen from "./components/ResultScreen";
 import DashboardScreen from "./components/DashboardScreen";
-import { ArrowLeft, Loader2, History, RotateCcw } from "lucide-react";
+import { ArrowLeft, Loader2, History, AlertTriangle, RotateCcw } from "lucide-react";
 
 type Screen = "landing" | "sim" | "loadingResult" | "result" | "dashboard";
 type Phase = "idle" | "evaluating" | "reacted" | "loadingNext";
+
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  errorMessage: string;
+}
+
+class AppErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, errorMessage: "" };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return {
+      hasError: true,
+      errorMessage: error?.message || "Terjadi kesalahan tidak terduga pada antarmuka aplikasi.",
+    };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("AppErrorBoundary caught error:", error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex min-h-screen items-center justify-center bg-slate-50 p-6 text-slate-900">
+          <div className="surface-card max-w-md rounded-lg p-6 text-center space-y-4">
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-md bg-red-50 text-red-700 border border-red-200">
+              <AlertTriangle className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="type-subhead text-slate-900">Gangguan Antarmuka Sistem</h1>
+              <p className="type-body mt-1 text-slate-600">{this.state.errorMessage}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                this.setState({ hasError: false, errorMessage: "" });
+                window.location.reload();
+              }}
+              className="type-meta inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600 cursor-pointer"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              <span>Muat Ulang Aplikasi</span>
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 function playTone(type: "pop" | "chime" | "warning" | "buff") {
   try {
@@ -51,10 +108,10 @@ function playTone(type: "pop" | "chime" | "warning" | "buff") {
       osc.stop(now + 0.35);
     } else if (type === "buff") {
       osc.type = "sine";
-      osc.frequency.setValueAtTime(587.33, now); // D5
-      osc.frequency.setValueAtTime(739.99, now + 0.08); // F#5
-      osc.frequency.setValueAtTime(880.0, now + 0.16); // A5
-      osc.frequency.setValueAtTime(1174.66, now + 0.24); // D6
+      osc.frequency.setValueAtTime(587.33, now);
+      osc.frequency.setValueAtTime(739.99, now + 0.08);
+      osc.frequency.setValueAtTime(880.0, now + 0.16);
+      osc.frequency.setValueAtTime(1174.66, now + 0.24);
       gain.gain.setValueAtTime(0.09, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
       osc.start(now);
@@ -75,10 +132,9 @@ function playTone(type: "pop" | "chime" | "warning" | "buff") {
 
 const LOCAL_STORAGE_HISTORY_KEY = "leadr_sim_history_v1";
 
-export default function App() {
+function SimulatorApp() {
   const [screen, setScreen] = useState<Screen>("landing");
   const [sid, setSid] = useState("");
-  const [currentDomain, setCurrentDomain] = useState<DomainType>("tech_startup");
   const [scenario, setScenario] = useState<Scenario | null>(null);
   const [userDossier, setUserDossier] = useState<UserDossier | undefined>(undefined);
   const [chat, setChat] = useState<ChatMessage[]>([]);
@@ -89,13 +145,8 @@ export default function App() {
   const [result, setResult] = useState<ResultResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [modeInfo, setModeInfo] = useState<{ gemini_configured: boolean; mode: string } | null>(null);
-  const [activeModel, setActiveModel] = useState<string>("gemini-3.8-flash");
-  const [fallbackModelUsed, setFallbackModelUsed] = useState(false);
   const [historyRecords, setHistoryRecords] = useState<SimulationHistoryRecord[]>([]);
 
-  // Load history from server and localStorage
   const refreshHistory = useCallback(async () => {
     try {
       const serverRes = await api.getHistory();
@@ -106,7 +157,6 @@ export default function App() {
         } catch {}
       }
     } catch {
-      // Fallback to localStorage if server history is empty or unreachable
       try {
         const local = localStorage.getItem(LOCAL_STORAGE_HISTORY_KEY);
         if (local) {
@@ -117,13 +167,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    api.checkHealth()
-      .then((h) => {
-        setModeInfo({ gemini_configured: h.gemini_configured, mode: h.mode });
-        if (h.active_model) setActiveModel(h.active_model);
-        if (h.fallback_triggered) setFallbackModelUsed(true);
-      })
-      .catch(() => {});
+    api.checkHealth().catch(() => {});
     refreshHistory();
   }, [refreshHistory]);
 
@@ -136,32 +180,27 @@ export default function App() {
     setError(msg);
   };
 
-  const startSimulation = useCallback(
-    async (domain?: DomainType) => {
-      setError(null);
-      setLoading(true);
-      try {
-        const res = await api.start(domain);
-        setSid(res.session_id);
-        setCurrentDomain(res.domain);
-        setScenario(res.scenario);
-        setUserDossier(res.userDossier);
-        setChat(res.scenario.messages);
-        setState(res.state);
-        setDelta(null);
-        setPhase("idle");
-        setIsGameOver(false);
-        setScreen("sim");
-        if (res.active_model) setActiveModel(res.active_model);
-        if (soundEnabled) playTone("pop");
-      } catch (e) {
-        handleErr(e);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [soundEnabled]
-  );
+  const startSimulation = useCallback(async (domain?: DomainType) => {
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await api.start(domain);
+      setSid(res.session_id);
+      setScenario(res.scenario);
+      setUserDossier(res.userDossier);
+      setChat(res.scenario.messages);
+      setState(res.state);
+      setDelta(null);
+      setPhase("idle");
+      setIsGameOver(false);
+      setScreen("sim");
+      playTone("pop");
+    } catch (e) {
+      handleErr(e);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -182,7 +221,7 @@ export default function App() {
     };
 
     setChat((prev) => [...prev, playerMsg]);
-    if (soundEnabled) playTone("pop");
+    playTone("pop");
 
     try {
       const res: RespondResponse = await api.respond(sid, text);
@@ -191,17 +230,13 @@ export default function App() {
       setDelta(res.state_delta);
       setIsGameOver(res.is_game_over);
       setPhase("reacted");
-      if (res.active_model) setActiveModel(res.active_model);
-      if (res.fallback_model_used) setFallbackModelUsed(true);
 
-      if (soundEnabled) {
-        if (res.state.buffActive) {
-          playTone("buff");
-        } else if (res.state.debuffActive || res.state.morale <= 15) {
-          playTone("warning");
-        } else {
-          playTone("chime");
-        }
+      if (res.state.buffActive) {
+        playTone("buff");
+      } else if (res.state.debuffActive || res.state.morale <= 15) {
+        playTone("warning");
+      } else {
+        playTone("chime");
       }
     } catch (e) {
       handleErr(e);
@@ -214,7 +249,7 @@ export default function App() {
     try {
       if (isGameOver) {
         setScreen("loadingResult");
-        if (soundEnabled) playTone("chime");
+        playTone("chime");
         const res = await api.result(sid);
         setResult(res);
         setScreen("result");
@@ -226,7 +261,7 @@ export default function App() {
         setChat(next.scenario.messages);
         setDelta(null);
         setPhase("idle");
-        if (soundEnabled) playTone("pop");
+        playTone("pop");
       }
     } catch (e) {
       handleErr(e);
@@ -266,7 +301,6 @@ export default function App() {
         onStart={startSimulation}
         isLoading={loading}
         error={error}
-        modeInfo={modeInfo}
         onOpenDashboard={() => setScreen("dashboard")}
         historyCount={historyRecords.length}
       />
@@ -290,13 +324,13 @@ export default function App() {
   if (screen === "loadingResult") {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 p-6 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-600 text-white shadow-2xs">
+        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-600 text-white">
           <Loader2 className="h-6 w-6 animate-spin" />
         </div>
-        <h2 className="mt-4 text-base font-bold text-slate-900">
+        <h2 className="type-subhead mt-4 text-slate-900">
           Menyusun Evaluasi Kepemimpinan &amp; Akumulasi Skor...
         </h2>
-        <p className="mt-1 text-xs text-slate-500 max-w-sm">
+        <p className="type-body mt-1 text-slate-600 max-w-sm">
           Menganalisis pencapaian target 100% progres, akumulasi skor skenario, dan radar 4 dimensi.
         </p>
       </div>
@@ -314,14 +348,18 @@ export default function App() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-100 text-slate-800">
-      {/* Top Navbar Bar */}
-      <nav className="border-b border-slate-200 bg-white px-4 py-2.5 shadow-2xs sticky top-0 z-20">
+    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
+      {/* Docked Top Navigation Bar */}
+      <nav
+        aria-label="Navigasi Simulasi"
+        className="border-b border-slate-200 bg-white px-4 py-2.5 sticky top-0 z-20"
+      >
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={() => handleRestart()}
-              className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-600 transition"
+              className="type-meta flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 py-1.5 font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-600 transition"
               title="Kembali ke Beranda"
             >
               <ArrowLeft className="h-3.5 w-3.5 text-slate-600" />
@@ -331,14 +369,14 @@ export default function App() {
             <div className="h-4 w-px bg-slate-200" />
 
             <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 font-black text-sm text-white">
+              <span className="type-body flex h-7 w-7 items-center justify-center rounded-md bg-blue-600 font-bold text-white">
                 L
               </span>
-              <span className="font-extrabold text-sm text-slate-900 tracking-tight">
+              <span className="type-subhead text-slate-900">
                 Leadr
               </span>
-              <span className="text-xs text-slate-400 hidden sm:inline">·</span>
-              <span className="text-xs text-slate-600 font-medium hidden sm:inline">
+              <span className="type-meta text-slate-400 hidden sm:inline">·</span>
+              <span className="type-meta text-slate-600 font-medium hidden sm:inline">
                 Target: 100% Progres | Jaga Morale &amp; Trust &gt; 0%
               </span>
             </div>
@@ -346,8 +384,9 @@ export default function App() {
 
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={() => setScreen("dashboard")}
-              className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-600"
+              className="type-meta flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 py-1.5 font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-600 transition"
               title="Buka Dashboard Riwayat"
             >
               <History className="h-3.5 w-3.5 text-blue-600" />
@@ -357,17 +396,15 @@ export default function App() {
         </div>
       </nav>
 
-      {/* Main Simulation Layout */}
+      {/* Main Simulation Workspace */}
       {state && (
-        <div className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 gap-4 p-3 sm:p-4 lg:grid-cols-[1fr_340px]">
+        <div className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 gap-4 p-4 lg:grid-cols-[1fr_340px]">
           <ChatPanel
             scenario={scenario}
             messages={chat}
             phase={phase}
             isGameOver={isGameOver}
             error={error}
-            activeModel={activeModel}
-            fallbackModelUsed={fallbackModelUsed}
             onSend={sendResponse}
             onProceed={proceedNext}
           />
@@ -382,5 +419,13 @@ export default function App() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AppErrorBoundary>
+      <SimulatorApp />
+    </AppErrorBoundary>
   );
 }

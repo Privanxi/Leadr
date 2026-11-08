@@ -2,20 +2,68 @@
 
 @layer base {
   :root {
-    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-sans: "Inter", "Plus Jakarta Sans", "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono", "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --bg-base: #f8fafc;
+    --bg-surface: #ffffff;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #475569;
+    --border: #e2e8f0;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
   }
 
   body {
     font-family: var(--font-sans);
-    background-color: #f8fafc;
-    color: #0f172a;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
   }
 
   /* Accessible, crisp focus-visible ring */
   *:focus-visible {
-    outline: 2px solid #2563eb;
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
+  }
+}
+
+/* Strict 4-Tier Typography Scale & Hairline Surface Tokens */
+@layer components {
+  .type-heading {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .type-subhead {
+    font-size: 0.9375rem;
+    line-height: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .type-body {
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+  }
+
+  .type-meta {
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+  }
+
+  .surface-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
   }
 }

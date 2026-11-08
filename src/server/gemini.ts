@@ -8,6 +8,7 @@ import {
   Scenario,
   ChatMessage,
   Character,
+  TurnScientificEvaluation,
 } from "../types.js";
 import { ScenarioSeed, getScenarioByIndex, SEEDS } from "./seeds.js";
 import {
@@ -18,6 +19,7 @@ import {
   fallbackNarrative,
 } from "./prompts.js";
 import { extractTaggedActors } from "./engine.js";
+import { calculateScientificTurnEvaluation } from "./scientificScoring.js";
 
 /**
  * Model candidates cascade.
@@ -147,6 +149,7 @@ export interface GeneratedEval {
   active_model?: string;
   fallback_model_used?: boolean;
   tagged_actors?: string[];
+  scientific_eval: TurnScientificEvaluation;
 }
 
 export async function evaluatePlayerResponse(
@@ -156,16 +159,19 @@ export async function evaluatePlayerResponse(
   message: string
 ): Promise<GeneratedEval> {
   const tagged_actors = extractTaggedActors(message, state.characters);
+  const scenarioId = `SCN_${seed.archetypeCode || "01"}_${seed.domain.toUpperCase()}`;
   const ai = getGeminiClient();
 
   if (!ai) {
     const fallback = fallbackEval(message, state.characters, seed.domain);
+    const scientific_eval = calculateScientificTurnEvaluation(scenarioId, message);
     return {
       ...fallback,
       fallback_used: true,
       active_model: "heuristic_mock",
       fallback_model_used: false,
       tagged_actors,
+      scientific_eval,
     };
   }
 
@@ -210,6 +216,19 @@ export async function evaluatePlayerResponse(
               required: ["sender", "text"],
             },
           },
+          extracted_features: {
+            type: Type.ARRAY,
+            description: "Walsh et al. (2025) binary behavioral feature indicators detected in leader response",
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                indicator_id: { type: Type.STRING },
+                present: { type: Type.BOOLEAN },
+                evidence: { type: Type.STRING, nullable: true },
+              },
+              required: ["indicator_id", "present"],
+            },
+          },
         },
         required: ["scores", "rationale", "team_reactions"],
       },
@@ -245,6 +264,12 @@ export async function evaluatePlayerResponse(
         }))
       : [];
 
+    const scientific_eval = calculateScientificTurnEvaluation(
+      scenarioId,
+      message,
+      Array.isArray(parsed.extracted_features) ? parsed.extracted_features : undefined
+    );
+
     return {
       scores,
       rationale: parsed.rationale || {},
@@ -253,16 +278,19 @@ export async function evaluatePlayerResponse(
       active_model: modelUsed,
       fallback_model_used: isFallback,
       tagged_actors,
+      scientific_eval,
     };
   } catch (err: any) {
     console.warn("[Leadr] All Gemini models failed, falling back to heuristic:", err?.message || err);
     const fallback = fallbackEval(message, state.characters, seed.domain);
+    const scientific_eval = calculateScientificTurnEvaluation(scenarioId, message);
     return {
       ...fallback,
       fallback_used: true,
       active_model: "heuristic_mock",
       fallback_model_used: false,
       tagged_actors,
+      scientific_eval,
     };
   }
 }

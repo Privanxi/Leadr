@@ -360,6 +360,7 @@ export function calculateFinalScore(
       ((h.scores.komunikasi + h.scores.empati + h.scores.ketegasan + h.scores.krisis) / 4).toFixed(1)
     ),
     rationale: h.rationale,
+    scientific_eval: h.scientific_eval,
   }));
 
   return {
