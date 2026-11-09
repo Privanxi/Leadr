@@ -165,12 +165,14 @@ export function updateCharacterStates(
       const tagBonus = isTagged ? 5 : 0;
       charStamina = clamp(charStamina + 15 + tagBonus);
       charMorale = clamp(charMorale + 10 + tagBonus);
-      mood = "Tenang & Berenergi";
+
       condition = isTagged
         ? `Di-tag secara khusus oleh ketua: "${c.name} merasa didengar & diprioritaskan"`
         : isDirectlyAddressed
         ? `Mendapat arahan langsung dari ketua: "${c.name} merasa dihargai"`
         : "Beban kerja lebih terkendali, stamina berangsur pulih";
+
+      mood = charMorale >= 65 ? "Tenang & Berenergi" : "Mulai Pulih";
     } else if (scores.empati <= 3) {
       charStamina = clamp(charStamina - 15);
       charMorale = clamp(charMorale - 10);
@@ -179,10 +181,21 @@ export function updateCharacterStates(
         ? `Di-tag dalam kondisi tertekan tanpa empati yang memadai`
         : "Kelelahan mental meningkat karena minimnya empati";
     } else if (scores.ketegasan >= 7 && scores.krisis >= 7) {
-      mood = "Fokus Eksekusi";
+      mood = charMorale >= 50 ? "Fokus Eksekusi" : "Terbebani Target";
       condition = isTagged
         ? `Mendapat penugasan prioritas langsung dari ketua`
         : "Mendapat kepastian prioritas dan batas waktu yang jelas";
+    }
+
+    // Real life logic threshold checks based on resulting charMorale
+    if (charMorale <= 20) {
+      mood = "Kritis & Putus Asa";
+      if (!isTagged) condition = "Mental breakdown di ambang batas; energi habis dan hampir menyerah.";
+    } else if (charMorale < 40) {
+      mood = "Burnout Berat";
+      if (!isTagged) condition = "Kelelahan fisik dan mental berat; butuh jeda dan pemulihan.";
+    } else if (charMorale >= 80 && charStamina >= 70) {
+      mood = "Sangat Termotivasi";
     }
 
     return {

@@ -318,13 +318,20 @@ export default function ChatPanel({
         ) : (
           messages.map((m, idx) => {
             const isPlayer = m.sender === "Kamu";
+            const senderChar = !isPlayer
+              ? characters.find((c) => c.name.toLowerCase() === m.sender.toLowerCase())
+              : null;
+
+            const isLowMorale = senderChar ? senderChar.morale < 40 : false;
+            const isCritical = senderChar ? senderChar.morale <= 20 : false;
+            const isHighMorale = senderChar ? senderChar.morale >= 70 : false;
 
             return (
               <div
                 key={idx}
                 className={`flex flex-col ${isPlayer ? "items-end" : "items-start"}`}
               >
-                <div className="flex items-baseline gap-1.5 mb-1 px-1">
+                <div className="flex flex-wrap items-center gap-1.5 mb-1 px-1">
                   <span className="type-meta font-bold text-slate-900">
                     {m.sender}
                   </span>
@@ -333,8 +340,30 @@ export default function ChatPanel({
                       · {m.role}
                     </span>
                   )}
+                  {senderChar && (
+                    <span
+                      title={`Stamina: ${senderChar.fitness.stamina}% | Kondisi: ${senderChar.fitness.condition}`}
+                      className={`rounded border px-1.5 py-0.5 font-mono text-[10px] font-semibold ${
+                        isCritical
+                          ? "border-red-300 bg-red-100 text-red-800 animate-pulse"
+                          : isLowMorale
+                          ? "border-amber-300 bg-amber-50 text-amber-800"
+                          : isHighMorale
+                          ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                          : "border-slate-200 bg-slate-100 text-slate-600"
+                      }`}
+                    >
+                      {isCritical
+                        ? `Kritis (${senderChar.morale}%)`
+                        : isLowMorale
+                        ? `Burnout (${senderChar.morale}%)`
+                        : isHighMorale
+                        ? `Optimal (${senderChar.morale}%)`
+                        : `Morale ${senderChar.morale}%`}
+                    </span>
+                  )}
                   {m.timestamp && (
-                    <span className="type-meta font-mono text-slate-500">
+                    <span className="type-meta font-mono text-slate-500 text-[11px]">
                       {m.timestamp}
                     </span>
                   )}
@@ -344,6 +373,10 @@ export default function ChatPanel({
                   className={`max-w-[85%] rounded-md px-3.5 py-2.5 type-body border ${
                     isPlayer
                       ? "bg-blue-600 text-white border-blue-700 shadow-2xs"
+                      : isCritical
+                      ? "bg-red-50/60 text-slate-900 border-red-200 shadow-2xs"
+                      : isLowMorale
+                      ? "bg-amber-50/40 text-slate-900 border-amber-200 shadow-2xs"
                       : "bg-white text-slate-900 border-slate-200 shadow-2xs"
                   }`}
                 >

@@ -166,7 +166,7 @@ export async function evaluatePlayerResponse(
   const ai = getGeminiClient();
 
   if (!ai) {
-    const fallback = fallbackEval(message, state.characters, seed.domain);
+    const fallback = fallbackEval(message, state.characters, seed.domain, { morale: state.morale, trust: state.trust });
     const scientific_eval = calculateScientificTurnEvaluation(scenarioId, message);
     return {
       ...fallback,
@@ -285,7 +285,7 @@ export async function evaluatePlayerResponse(
     };
   } catch (err: any) {
     console.warn("[Leadr] All Gemini models failed, falling back to heuristic:", err?.message || err);
-    const fallback = fallbackEval(message, state.characters, seed.domain);
+    const fallback = fallbackEval(message, state.characters, seed.domain, { morale: state.morale, trust: state.trust });
     const scientific_eval = calculateScientificTurnEvaluation(scenarioId, message);
     return {
       ...fallback,

@@ -190,7 +190,7 @@ export default function ResultScreen({
                 className="type-meta inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-3.5 py-2 font-semibold text-white hover:bg-blue-700 transition cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-600"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
-                <span>Simulasi Baru</span>
+                <span>Pilih Domain / Mulai Baru</span>
               </button>
             </div>
           </div>
@@ -619,7 +619,7 @@ export default function ResultScreen({
               className="type-meta flex items-center gap-1.5 rounded-md bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 transition cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-600"
             >
               <RotateCcw className="h-3.5 w-3.5" />
-              <span>Mulai Skenario Acak Baru</span>
+              <span>Pilih Domain / Mulai Baru</span>
             </button>
           </div>
         </div>

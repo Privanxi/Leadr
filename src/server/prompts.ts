@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   Scores,
   TeamState,
   HistoryEntry,
@@ -21,15 +21,30 @@ Kamu mengevaluasi instruksi seorang Ketua Tim / Project Lead dalam berbagai sken
      * Organisasi Kampus: "Siap Kak Ketua!", "Alhamdulillah pihak sponsor mau cairin", "Anak logistik udah standby di tenda", "Gimana kalau rektorat nanya lagi?".
      * Corporate Agency: "Baik Pak/Bu, saya forward ke Bu Ratna sekarang", "SOW-nya kita kunci di Phase 1 ya", "Tim dev bakal refactoring malam ini".
      * Skandal Kas/Sosial: "Jujur aku gemetar banget liat Twitter", "Makasih Kak udah netral dan mau dengerin", "Aku bawa berkas talangannya sekarang".
-2. DENGARKAN & APRESIASI ISI INSTRUKSI KETUA:
+
+2. WAJIB: TONE KARAKTER MENGIKUTI MORALE & TRUST MEREKA (REAL LIFE LOGIC):
+   Ini SANGAT PENTING. Gunakan data Morale per karakter dan Team Trust untuk menentukan tone reaksi.
+   - Morale Karakter >= 70% → Responsif, antusias, siap eksekusi, supportif ke sesama.
+   - Morale Karakter 40–69% → Lelah tapi masih kooperatif; nada datar/flat, butuh dorongan, sesekali mengeluh tapi tetap ikut instruksi.
+   - Morale Karakter < 40% → Burn out berat; nada berat/murung/skeptis, bicara singkat, mudah pasrah, mulai menyebut soal "udah nggak kuat", "entah sampai kapan", atau mau mundur. TAPI masih mau dengar ketua jika instruksinya bagus.
+   - Morale Karakter <= 15% → Kritis! Karakter ini hampir menyerah. Responsnya pendek dan emosional: tangisan digital, "aku nggak sanggup lagi", atau benar-benar diam (send satu titik "..." atau stiker saja, lalu ada teman yang khawatir menanyakan kondisinya).
+   
+   Team Trust (bukan per karakter, tapi kondisi psikologis kolektif):
+   - Trust >= 70% → Karakter berani saling cover tugas rekan, mau transparansi masalah ke grup.
+   - Trust 40–69% → Ada keraguan antar anggota, sesekali bicara hanya langsung ke ketua bukan ke grup, mulai defensive soal tanggungjawab masing-masing.
+   - Trust < 40% → Karakter cenderung saling curiga, membela diri ("bukan salah aku"), tidak mau ambil tanggungjawab tambahan, ada yang mulai bicara soal "siapa yang salah dulu".
+   - Trust <= 15% → Konflik terbuka! Ada yang frontal ke sesama anggota di grup chat, ada yang silent, ada yang terang-terangan bilang mau lapor ke pihak luar / keluar dari tim.
+
+3. DENGARKAN & APRESIASI ISI INSTRUKSI KETUA:
    - Jika ketua memberikan kabar ("Dimas balas WA", "Sponsor udah konfirmasi", "Fikri lagi bawa nota"), anggota yang bersangkutan & rekan tim lainnya HARUS merespons secara langsung dan relevan (bertanya detail, bernapas lega, atau membagi aksi).
-   - Jika ketua membagi tugas taktis (siapa pegang apa, jam berapa selesai), karakter menyambut tugas tersebut dan saling menimpali (misal: A menerima tugas, lalu B memberi tahu A lokasi file/kontaknya).
-   - Jika ketua menyuruh istirahat, anggota yang lelah menunjukkan rasa syukur mendalam.
-   - Jika ketua bersikap kasar/menyalahkan, barulah karakter bereaksi kecewa, terluka, atau defensif.
-3. REAKSI TIM MULTI-AKTOR (2-3 Balasan):
+   - Jika ketua membagi tugas taktis (siapa pegang apa, jam berapa selesai), karakter menyambut tugas tersebut dan saling menimpali (misal: A menerima tugas, lalu B memberi tahu A lokasi file/kontaknya). TAPI jika morale mereka rendah, penerimaan tugasnya lebih berat ("oke... tapi aku nggak janji bisa ngebut" bukan "siap gas!").
+   - Jika ketua menyuruh istirahat, anggota yang lelah menunjukkan rasa syukur mendalam (semakin rendah morale-nya, semakin terasa reliefnya).
+   - Jika ketua bersikap kasar/menyalahkan, karakter bereaksi kecewa, terluka, atau defensif — dan jika trust sudah rendah, ada yang bisa langsung konfrontasi keras.
+
+4. REAKSI TIM MULTI-AKTOR (2-3 Balasan):
    - Hasilkan 2 sampai 3 pesan chat balasan.
    - Karakter harus saling berinteraksi (cross-reacting), bukan hanya bicara searah ke ketua.
-   - Sertakan emosi nyata: rasa lega, antusias, kekhawatiran yang mereda, atau komitmen kerja.
+   - Sertakan emosi nyata YANG SESUAI KONDISI MORALE MEREKA: rasa lega (morale tinggi), kelelahan yang mereda sedikit (morale sedang), atau kepasrahan/skeptisisme (morale rendah).
 
 # KONSISTENSI ALUR CERITA & NARRATIVE CONTINUITY (PENTING SEKALI):
 - Pertahankan kontinuitas alur cerita dan fakta dari percakapan sebelumnya.
@@ -72,11 +87,27 @@ export function evaluatorUserPrompt(
 ): string {
   const chat = transcript.map((m) => `${m.sender} (${m.role || ""}): ${m.text}`).join("\n");
   const charStatus = state.characters
-    .map(
-      (c) =>
-        `- ${c.name} (${c.role}): Morale ${c.morale}%, Stamina ${c.fitness.stamina}%, Mood: "${c.mood}", Karakter: ${c.personality}`
-    )
+    .map((c) => {
+      const moraleTag =
+        c.morale >= 70
+          ? "🟢 ENERGIK"
+          : c.morale >= 40
+          ? "🟡 LELAH TAPI KOOPERATIF"
+          : c.morale > 15
+          ? "🔴 BURNOUT — nada berat, skeptis, bicara singkat"
+          : "💀 KRITIS — hampir menyerah, respons sangat pendek/emosional";
+      return `- ${c.name} (${c.role}): Morale ${c.morale}% [${moraleTag}], Stamina ${c.fitness.stamina}%, Mood: "${c.mood}", Kondisi: "${c.fitness.condition}", Karakter: ${c.personality}`;
+    })
     .join("\n");
+
+  const trustTag =
+    state.trust >= 70
+      ? "🟢 SOLID — saling cover, transparan"
+      : state.trust >= 40
+      ? "🟡 RETAK — ada keraguan, mulai defensive"
+      : state.trust > 15
+      ? "🔴 KRISIS KEPERCAYAAN — saling curiga, tidak mau ambil tanggungjawab tambahan"
+      : "💀 RUNTUH — konflik terbuka antar anggota, ada yang frontal atau diam total";
 
   const lower = message.toLowerCase();
   const taggedActors = state.characters
@@ -108,10 +139,15 @@ ${charStatus}
 
 <state_tim_saat_ini>
 Team Morale: ${state.morale}%
-Team Trust: ${state.trust}%
+Team Trust: ${state.trust}% [${trustTag}]
 Target Progress: ${state.progress}% / 100%
 Buff Sinergi Aktif: ${state.buffActive ? "YA (+50% Laju Progress)" : "TIDAK"}
 Debuff Kelelahan Aktif: ${state.debuffActive ? "YA (-50% Penalti Progress)" : "TIDAK"}
+
+INSTRUKSI WAJIB — TONE REAKSI MENGIKUTI KONDISI DI ATAS:
+Setiap karakter HARUS merespons dengan tone yang MENCERMINKAN morale dan kondisi mereka (lihat tag 🟢🟡🔴💀 di atas).
+Karakter dengan morale rendah TIDAK BOLEH tiba-tiba antusias hanya karena instruksi ketua bagus — mereka butuh waktu untuk pulih.
+Jika Trust rendah (🔴💀), karakter yang bereaksi boleh saling menyalahkan atau defensive di chat grup meski instruksi ketua baik.
 </state_tim_saat_ini>
 
 <riwayat_chat_terakhir>
@@ -137,10 +173,14 @@ Tugasmu adalah merancang skenario krisis kepemimpinan baru yang BERKESINAMBUNGAN
    - Progres 46-70%: Integrasi antarmodul/divisi, bentrok prioritas fitur vs stabilitas, waktu yang semakin sempit.
    - Progres 71-88%: Tekanan stakeholder eksternal (dewan juri hackathon, klien korporat enterprise, dekanat kampus, media publik), rehearsal/gladi resik bermasalah.
    - Progres 89-99%: Krisis detik-detik terakhir menjelang go-live / demo juri / sidang final. Ujian ketenangan dan kekompakan tim sebelum kemenangan 100%.
-3. Karakter yang Hidup & Berbicara Nyata:
+3. Karakter yang Hidup & Berbicara Nyata Sesuai Kondisi Morale & Trust (Real Life Logic):
    - Gunakan nama dan kepribadian karakter resmi yang ada di domain tersebut.
    - Pesan pembuka (messages) terdiri dari 2 sampai 3 pesan chat WhatsApp/Slack grup dari anggota tim yang sedang menghadapi kebuntuan baru.
    - Gunakan Bahasa Indonesia percakapan yang alami, ekspresif, tidak kaku (seperti obrolan riil anak startup, panitia mahasiswa, atau profesional agency).
+   - TONE PESAN PEMBUKA WAJIB MENGIKUTI TINGKAT MORALE & TRUST TIM:
+     * Jika Morale < 40% (Burnout): Anggota tim membuka percakapan dengan nada kelelahan berat, frustrasi, kurang tidur, atau keputusasaan.
+     * Jika Trust < 40% (Krisis Kepercayaan): Anggota tim saling menyindir, menolak dibebani tugas orang lain, atau saling lempar tanggung jawab.
+     * Jika Morale >= 75% & Trust >= 75% (Sinergi Tinggi): Anggota tim tetap tenang, saling mendukung dan berfokus taktis mencari jalan keluar bersama ketua.
 4. Kontinuitas Khusus Domain Drama Sosial:
    - Uang kas 15 juta tetap konsisten murni untuk dana talangan darurat kegiatan departemen lain tanpa izin bendahara (bukan untuk kepentingan pribadi). Alur cerita berkembang dari audit kuitansi vendor, mediasi faksi pengurus, klarifikasi dekanat, hingga pengembalian dana dan rekonsiliasi total.
 
@@ -201,7 +241,8 @@ Buat judul yang memikat, ringkasan dilema kepemimpinan yang tajam, tenggat waktu
 export function fallbackEval(
   message: string,
   characters: Character[],
-  domain: DomainType = "tech_startup"
+  domain: DomainType = "tech_startup",
+  state?: { morale: number; trust: number }
 ): {
   scores: Scores;
   rationale: Record<Dim, string>;
@@ -209,6 +250,21 @@ export function fallbackEval(
 } {
   const lower = message.toLowerCase();
   const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+  // Morale/Trust thresholds for tone coloring
+  const teamMorale = state?.morale ?? 60;
+  const teamTrust = state?.trust ?? 60;
+  const isLowMorale = teamMorale < 40;
+  const isCriticalMorale = teamMorale <= 15;
+  const isLowTrust = teamTrust < 40;
+  const isCriticalTrust = teamTrust <= 15;
+
+  // Helper: pick reaction text based on current team condition
+  function colorReaction(normalText: string, lowMoraleText: string, criticalText?: string): string {
+    if (isCriticalMorale && criticalText) return criticalText;
+    if (isLowMorale) return lowMoraleText;
+    return normalText;
+  }
 
   // Detect dominant intent
   const isToxic =
@@ -475,13 +531,21 @@ export function fallbackEval(
       reactions.push({
         sender: "Sekar",
         role: "Humas",
-        text: "Siap Kak ketua! Pembagian tugasnya jelas banget. Aku langsung follow up panitia demo sesuai checkpoint.",
+        text: colorReaction(
+          "Siap Kak ketua! Pembagian tugasnya jelas banget. Aku langsung follow up panitia demo sesuai checkpoint.",
+          "Oke Kak... aku coba deh. Tapi jujur aku udah nggak banyak tenaga. Izin sesekali minta tolong ya.",
+          "..."
+        ),
         timestamp: now,
       });
       reactions.push({
         sender: "Bayu",
         role: "QA & Cloud",
-        text: "Rencana Plan B mock data ini realistis. Server staging ku-kunci konfigurasinya sesuai timeline ketua.",
+        text: colorReaction(
+          "Rencana Plan B mock data ini realistis. Server staging ku-kunci konfigurasinya sesuai timeline ketua.",
+          "Baik... aku kerjain. Tapi kalau ada yang bisa bantu QA-nya malam ini, tolong ya, tangan aku udah mati rasa.",
+          isLowTrust ? "Loh kenapa aku yang kena beban ini lagi? Kemarin juga gue yang lembur sendirian." : "Nggak sanggup Kak... aku butuh istirahat dulu sebentar."
+        ),
         timestamp: now,
       });
     } else if (domain === "campus_org") {
@@ -601,52 +665,84 @@ export function fallbackEval(
     reactions.push({
       sender: "Sekar",
       role: "Humas",
-      text: "Baik Kak ketua, instruksi dipahami. Aku dan tim segera tindak lanjuti sebelum panitia nagih lagi.",
+      text: colorReaction(
+        "Baik Kak ketua, instruksi dipahami. Aku dan tim segera tindak lanjuti sebelum panitia nagih lagi.",
+        "Oke Kak... didengar. Aku coba kerjain meski agak berat sekarang.",
+        isLowTrust ? "Instruksi sih oke, tapi siapa yang jamin ini nggak jadi beban aku sendiri lagi kayak kemarin?" : "...aku coba. Tapi tolong jangan harap terlalu banyak malam ini."
+      ),
       timestamp: now,
     });
     reactions.push({
       sender: "Rani",
       role: "Desain UI/UX",
-      text: "Siap Kak, aku sesuaikan aset Figma-nya sesuai arahan tadi ya.",
+      text: colorReaction(
+        "Siap Kak, aku sesuaikan aset Figma-nya sesuai arahan tadi ya.",
+        "Iya Kak... aku usahain. Tangan udah gemetar tapi aku kerjain pelan-pelan.",
+        "..."
+      ),
       timestamp: now,
     });
   } else if (domain === "campus_org") {
     reactions.push({
       sender: "Maya",
       role: "Logistik",
-      text: "Oke Kak Ketua, kita koordinasikan ke koordinator lapangan sekarang juga.",
+      text: colorReaction(
+        "Oke Kak Ketua, kita koordinasikan ke koordinator lapangan sekarang juga.",
+        "Iya Kak... tapi anak-anak lapangan udah mulai ngeluh kecapekan. Aku usahain koordinasiin.",
+        isLowTrust ? "Kalau memang ini harus dikerjain, kenapa divisi lain nggak ikut turun tangan juga sih?" : "...nggak sanggup ngomong banyak Kak. Nanti ku-handle seadanya."
+      ),
       timestamp: now,
     });
     reactions.push({
       sender: "Fajar",
       role: "Bendahara",
-      text: "Noted Kak, pencatatan kas dan nota tetap ku-update berkala.",
+      text: colorReaction(
+        "Noted Kak, pencatatan kas dan nota tetap ku-update berkala.",
+        "Siap Kak... meski jujur aku ngerasa overload. Kalau ada yang bisa bantu rekapnya sangat membantu.",
+        "..."
+      ),
       timestamp: now,
     });
   } else if (domain === "corporate_agency") {
     reactions.push({
       sender: "Amanda",
       role: "Senior Account Mgr",
-      text: "Baik PM, instruksi sudah ku-forward ke channel komunikasi project.",
+      text: colorReaction(
+        "Baik PM, instruksi sudah ku-forward ke channel komunikasi project.",
+        "Noted PM... forwarded. Tapi jujur kondisi tim lagi nggak ideal sekarang.",
+        isLowTrust ? "Saya forward, tapi saya perlu tahu siapa yang PIC sebenarnya. Tim sudah bingung karena peran tidak jelas." : "PM... aku butuh istirahat. Tolong assign ke orang lain kalau masih ada yang bisa handle."
+      ),
       timestamp: now,
     });
     reactions.push({
       sender: "Kevin",
       role: "Lead Architect",
-      text: "Clear. Kami lanjut koding fitur prioritas utama.",
+      text: colorReaction(
+        "Clear. Kami lanjut koding fitur prioritas utama.",
+        "Oke... tapi tim engineer sudah on call 36 jam. Kita butuh rotasi shift atau output-nya bakal buggy.",
+        "Maaf PM, saya tidak sanggup commit timeline ini. Kalau dipaksakan kita kirim produk cacat ke klien."
+      ),
       timestamp: now,
     });
   } else {
     reactions.push({
       sender: "Nadia",
       role: "Divisi Media",
-      text: "Baik Kak Ketua, perkembangan respons warga kampus terus kami pantau ketat.",
+      text: colorReaction(
+        "Baik Kak Ketua, perkembangan respons warga kampus terus kami pantau ketat.",
+        "Aku pantau Kak... tapi menfess makin brutal. Jujur aku takut nama kita makin hancur.",
+        isLowTrust ? "Nadia udah nggak bisa kerja sendiri dengan tekanan sebesar ini. Kalau ketua nggak turun langsung, aku undur diri dari divisi media." : "...aku nggak tau lagi harus ngomong apa Kak."
+      ),
       timestamp: now,
     });
     reactions.push({
       sender: "Rio",
       role: "Koordinator Lapangan",
-      text: "Oke, kami tunggu bukti nyata di forum nanti malam.",
+      text: colorReaction(
+        "Oke, kami tunggu bukti nyata di forum nanti malam.",
+        "Bukti aja nggak cukup Kak kalau suasana udah sepanas ini. Tapi oke, aku tunggu.",
+        "Aku udah nggak bisa jamin koordinasi lapangan kalau situasinya begini. Masing-masing udah mulai jalan sendiri."
+      ),
       timestamp: now,
     });
   }

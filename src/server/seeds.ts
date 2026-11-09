@@ -37,10 +37,9 @@ export const DOMAINS: DomainInfo[] = [
     id: "social_drama",
     title: "Drama Sosial: Skandal Kas & Fitnah",
     tagline: "Selisih Dana 15 Juta, Chat Bocor ke Medsos, & Sahabat Terpecah",
-    badge: "Rare Crisis",
+    badge: "Etika & Integritas",
     icon: "Flame",
-    description: "Skenario langka & sensitif: Uang kas hilang, percakapan rahasia bocor ke base kampus, kubu internal saling serang, dan ancaman lapor Dekanat.",
-    isRare: true,
+    description: "Uji integritas tim: Klarifikasi dana talangan darurat, percakapan rahasia bocor ke base kampus, kubu internal saling serang, dan ancaman lapor Dekanat.",
   },
 ];
 
