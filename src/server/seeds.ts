@@ -1,4 +1,4 @@
-import {
+import type {
   Scenario,
   ChatMessage,
   Character,
@@ -6,7 +6,7 @@ import {
   ProjectMilestone,
   DomainType,
   DomainInfo,
-} from "../types.js";
+} from "../types.ts";
 
 export const DOMAINS: DomainInfo[] = [
   {

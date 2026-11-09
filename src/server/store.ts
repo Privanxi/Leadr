@@ -1,4 +1,4 @@
-import {
+import type {
   TeamState,
   Scenario,
   HistoryEntry,
@@ -7,12 +7,12 @@ import {
   UserDossier,
   DomainType,
   SimulationHistoryRecord,
-} from "../types.js";
+} from "../types.ts";
 import {
   DOMAIN_CHARACTERS,
   DOMAIN_MILESTONES,
   USER_DOSSIERS,
-} from "./seeds.js";
+} from "./seeds.ts";
 
 export interface Session {
   id: string;

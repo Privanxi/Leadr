@@ -1,4 +1,4 @@
-import {
+import type {
   Scores,
   TeamState,
   HistoryEntry,
@@ -7,8 +7,8 @@ import {
   ChatMessage,
   Character,
   DomainType,
-} from "../types.js";
-import { ScenarioSeed } from "./seeds.js";
+} from "../types.ts";
+import type { ScenarioSeed } from "./seeds.ts";
 
 export const EVALUATOR_SYSTEM = `Kamu adalah sistem simulator dinamika tim dan evaluator kepemimpinan interaktif (Leadr).
 Kamu mengevaluasi instruksi seorang Ketua Tim / Project Lead dalam berbagai skenario krisis (Tech Hackathon, Organisasi Kampus/BEM, Corporate Agency Profesional, atau Skandal Sosial Internal).

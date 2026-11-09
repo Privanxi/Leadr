@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import {
+import type {
   Scores,
   TeamState,
   HistoryEntry,
@@ -9,17 +9,17 @@ import {
   ChatMessage,
   Character,
   TurnScientificEvaluation,
-} from "../types.js";
-import { ScenarioSeed, getScenarioByIndex, SEEDS } from "./seeds.js";
+} from "../types.ts";
+import { type ScenarioSeed, getScenarioByIndex, SEEDS } from "./seeds.ts";
 import {
   EVALUATOR_SYSTEM,
   evaluatorUserPrompt,
   NARRATOR_SYSTEM,
   fallbackEval,
   fallbackNarrative,
-} from "./prompts.js";
-import { extractTaggedActors } from "./engine.js";
-import { calculateScientificTurnEvaluation } from "./scientificScoring.js";
+} from "./prompts.ts";
+import { extractTaggedActors } from "./engine.ts";
+import { calculateScientificTurnEvaluation } from "./scientificScoring.ts";
 
 /**
  * Model candidates cascade.

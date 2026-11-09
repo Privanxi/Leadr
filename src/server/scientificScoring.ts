@@ -1,11 +1,11 @@
-import {
+import type {
   BehavioralIndicatorId,
   CumulativeScientificReport,
   Dim,
   ExtractedBehavioralFeature,
   HistoryEntry,
   TurnScientificEvaluation,
-} from "../types.js";
+} from "../types.ts";
 
 export interface IndicatorDefinition {
   id: BehavioralIndicatorId;

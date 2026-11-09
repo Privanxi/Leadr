@@ -1,4 +1,4 @@
-import {
+import type {
   Scores,
   TeamState,
   StateDelta,
@@ -10,7 +10,7 @@ import {
   FinalScoreBreakdown,
   RankTier,
   DomainType,
-} from "../types.js";
+} from "../types.ts";
 
 export const BASE_PROGRESS_PER_INTERACTION = 8;
 export const DIMENSIONS: readonly Dim[] = [

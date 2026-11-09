@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { type Request, type Response } from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -9,13 +9,13 @@ import {
   recordHistory,
   getHistory,
   clearHistory,
-} from "./src/server/store.js";
+} from "./src/server/store.ts";
 import {
   getScenarioByIndex,
   DOMAINS,
   DOMAIN_SEEDS,
   getRandomDomain,
-} from "./src/server/seeds.js";
+} from "./src/server/seeds.ts";
 import {
   applyScores,
   decideOutcome,
@@ -23,21 +23,21 @@ import {
   weakestDimension,
   calculateFinalScore,
   OUTCOME_TITLES,
-} from "./src/server/engine.js";
-import { aggregateScientificReport } from "./src/server/scientificScoring.js";
+} from "./src/server/engine.ts";
+import { aggregateScientificReport } from "./src/server/scientificScoring.ts";
 import {
   evaluatePlayerResponse,
   generateOutcomeNarrative,
   getModelStatus,
-} from "./src/server/gemini.js";
-import {
+} from "./src/server/gemini.ts";
+import type {
   StartResponse,
   RespondResponse,
   NextResponse,
   ResultResponse,
   DomainType,
   SimulationHistoryRecord,
-} from "./src/types.js";
+} from "./src/types.ts";
 
 dotenv.config();
 
