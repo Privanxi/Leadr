@@ -131,7 +131,7 @@ export default function Landing({
           </div>
 
           <p className="type-meta font-medium text-slate-600">
-            Kondisi Selesai: Progres 100% · Kegagalan Kritis: Morale atau Trust mencapai 0%
+            Kondisi Selesai: Progres 100% | Kegagalan Kritis: Morale atau Trust mencapai 0%
           </p>
 
           {error && (

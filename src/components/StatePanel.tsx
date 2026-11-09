@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import {
   Character,
   TeamState,
@@ -41,7 +41,7 @@ export default function StatePanel({
   return (
     <aside
       aria-label="Panel Status Tim dan Target Proyek"
-      className="surface-card flex flex-col gap-3 rounded-lg p-4 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto"
+      className="surface-card flex flex-col gap-3 rounded-lg p-4 lg:h-full lg:overflow-y-auto min-h-0"
     >
       {/* Target Progress Tracker */}
       <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
@@ -246,7 +246,7 @@ export default function StatePanel({
                           {c.name}
                         </span>
                         <span className="type-meta text-slate-600">
-                          · {c.role}
+                          | {c.role}
                         </span>
                       </div>
                       <span className="type-meta block font-medium text-slate-700">

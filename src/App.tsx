@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, Component, ErrorInfo, ReactNode } from "react";
+﻿import React, { useEffect, useState, useCallback, Component, ErrorInfo, ReactNode } from "react";
 import { api } from "./api";
 import {
   ChatMessage,
@@ -348,11 +348,11 @@ function SimulatorApp() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
+    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900 lg:h-screen lg:overflow-hidden">
       {/* Docked Top Navigation Bar */}
       <nav
         aria-label="Navigasi Simulasi"
-        className="border-b border-slate-200 bg-white px-4 py-2.5 sticky top-0 z-20"
+        className="border-b border-slate-200 bg-white px-4 py-2.5 sticky top-0 z-20 shrink-0"
       >
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <div className="flex items-center gap-3">
@@ -375,7 +375,7 @@ function SimulatorApp() {
               <span className="type-subhead text-slate-900">
                 Leadr
               </span>
-              <span className="type-meta text-slate-400 hidden sm:inline">·</span>
+              <span className="type-meta text-slate-300 hidden sm:inline">|</span>
               <span className="type-meta text-slate-600 font-medium hidden sm:inline">
                 Target: 100% Progres | Jaga Morale &amp; Trust &gt; 0%
               </span>
@@ -398,7 +398,7 @@ function SimulatorApp() {
 
       {/* Main Simulation Workspace */}
       {state && (
-        <div className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 gap-4 p-4 lg:grid-cols-[1fr_340px]">
+        <div className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 gap-4 p-4 lg:grid-cols-[1fr_340px] lg:overflow-hidden min-h-0">
           <ChatPanel
             scenario={scenario}
             messages={chat}

@@ -356,12 +356,12 @@ export default function DashboardScreen({
                             </div>
                             <div className="type-meta flex items-center gap-2 mt-0.5 text-slate-600">
                               <span>{item.domainTitle}</span>
-                              <span>·</span>
+                              <span className="text-slate-300">|</span>
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
                                 {item.date}
                               </span>
-                              <span>·</span>
+                              <span className="text-slate-300">|</span>
                               <span>{item.totalTurns} Putaran</span>
                             </div>
                           </div>

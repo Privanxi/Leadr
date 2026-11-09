@@ -580,7 +580,7 @@ export default function ResultScreen({
                             <ul className="type-meta space-y-1 text-slate-700">
                               {turnSci.objective_feedback.map((fb, fIdx) => (
                                 <li key={fIdx} className="flex items-start gap-1.5">
-                                  <span className="font-mono font-bold text-slate-700">·</span>
+                                  <span className="font-mono font-bold text-slate-700">-</span>
                                   <span>{fb}</span>
                                 </li>
                               ))}

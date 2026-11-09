@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 import { ChatMessage, Scenario, DomainType, Character } from "../types";
 import {
   Send,
@@ -221,10 +221,10 @@ export default function ChatPanel({
   return (
     <section
       aria-label="Ruang Komunikasi Krisis"
-      className="surface-card flex h-full flex-col overflow-hidden"
+      className="surface-card flex h-full flex-col overflow-hidden min-h-0"
     >
       {/* Header bar */}
-      <header className="border-b border-slate-200 bg-white px-4 py-3">
+      <header className="border-b border-slate-200 bg-white px-4 py-3 shrink-0">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="flex items-start gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-900 text-white font-mono type-meta font-bold">
@@ -254,13 +254,13 @@ export default function ChatPanel({
                 </span>
                 {scenario?.archetype && (
                   <>
-                    <span>·</span>
+                    <span className="text-slate-300">|</span>
                     <span className="font-medium text-slate-700 line-clamp-1">
                       {scenario.archetype}
                     </span>
                   </>
                 )}
-                <span>·</span>
+                <span className="text-slate-300">|</span>
                 <button
                   type="button"
                   onClick={() => setShowContextDetails((v) => !v)}
@@ -308,7 +308,7 @@ export default function ChatPanel({
       </header>
 
       {/* Messages Stream */}
-      <div className="flex-1 space-y-4 overflow-y-auto p-4 bg-slate-50">
+      <div className="flex-1 space-y-4 overflow-y-auto p-4 bg-slate-50 min-h-0">
         {messages.length === 0 ? (
           <div className="flex h-full items-center justify-center p-8 text-center">
             <p className="type-meta text-slate-600">
@@ -337,7 +337,7 @@ export default function ChatPanel({
                   </span>
                   {m.role && (
                     <span className="type-meta text-slate-600">
-                      · {m.role}
+                      | {m.role}
                     </span>
                   )}
                   {senderChar && (
@@ -420,7 +420,7 @@ export default function ChatPanel({
       )}
 
       {/* Input / Control Footer */}
-      <footer className="border-t border-slate-200 bg-white p-4 space-y-3">
+      <footer className="border-t border-slate-200 bg-white p-4 space-y-3 shrink-0">
         {isGameOver ? (
           <div className="space-y-2">
             <div className="rounded-md border border-slate-200 bg-slate-100 p-2.5 text-center type-meta font-semibold text-slate-800">
@@ -482,7 +482,7 @@ export default function ChatPanel({
                           isTagged ? "text-blue-100" : "text-slate-500"
                         }`}
                       >
-                        · {c.role}
+                        ({c.role})
                       </span>
                     </button>
                   );
@@ -532,7 +532,7 @@ export default function ChatPanel({
                     >
                       <div className="flex items-center gap-1.5">
                         <span className="font-bold text-blue-600">@{c.name}</span>
-                        <span className="text-slate-600">· {c.role}</span>
+                        <span className="text-slate-600">({c.role})</span>
                       </div>
                       <span className="font-mono text-slate-600">
                         {c.fitness.stamina}%
