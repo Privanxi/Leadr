@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { ResultResponse, OutcomeCode, Dim, DomainType } from "../types";
 import RadarCard from "./RadarCard";
 import {
@@ -307,9 +307,9 @@ export default function ResultScreen({
           </div>
         </div>
 
-        {/* Supplementary Scientific Evaluation Section: Walsh et al. (2025) & Arthur et al. (2003/2008) */}
+        {/* Supplementary Scientific Evaluation Section: BARS & Feature Extraction */}
         <section
-          aria-label="Evaluasi Ilmiah Tambahan Walsh et al. dan Arthur et al."
+          aria-label="Evaluasi Ilmiah Tambahan (BARS & Feature-Extraction)"
           className="surface-card rounded-lg p-5 space-y-4"
         >
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-4">
@@ -322,12 +322,9 @@ export default function ResultScreen({
                   <h2 className="type-subhead text-slate-900">
                     Evaluasi Ilmiah Tambahan (BARS &amp; Feature-Extraction)
                   </h2>
-                  <span className="type-meta rounded-sm border border-blue-200 bg-blue-50 px-2 py-0.5 font-semibold text-blue-700">
-                    Walsh et al. (2025) &amp; Arthur et al. (2003/2008)
-                  </span>
                 </div>
                 <p className="type-meta text-slate-600 mt-0.5">
-                  Skoring deterministik berbasis ekstraksi bukti perilaku eksplisit: Skor(D) = Base ({scientificReport.base_score}) + &Sigma;(w_pos &times; I_pos) - &Sigma;(w_neg &times; I_neg)
+                  Analisis dimensi kepemimpinan objektif berbasis ekstraksi indikator perilaku eksplisit.
                 </p>
               </div>
             </div>
@@ -341,7 +338,7 @@ export default function ResultScreen({
             </div>
           </div>
 
-          {/* 4-Dimension Arthur et al. Matrix */}
+          {/* 4-Dimension Dimension Matrix */}
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
             {(["krisis", "komunikasi", "empati", "ketegasan"] as Dim[]).map((dim) => {
               const val = scientificReport.dimension_averages[dim];
@@ -383,7 +380,7 @@ export default function ResultScreen({
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-md border border-slate-200 bg-white p-3">
               <span className="type-meta font-semibold text-slate-900 block mb-1">
-                Validitas Konstruk Matriks 4 Dimensi (Arthur et al., 2003/2008)
+                Validitas Konstruk Matriks 4 Dimensi
               </span>
               <p className="type-meta text-slate-700">
                 {scientificReport.construct_validity_note}
@@ -392,7 +389,7 @@ export default function ResultScreen({
 
             <div className="rounded-md border border-slate-200 bg-white p-3">
               <span className="type-meta font-semibold text-slate-900 block mb-1">
-                Audit Ekstraksi Fitur Perilaku (Walsh et al., 2025)
+                Audit Ekstraksi Fitur Perilaku
               </span>
               <div className="flex items-center gap-4 mt-1">
                 <span className="type-meta inline-flex items-center gap-1 font-mono font-semibold text-emerald-700">
@@ -524,11 +521,11 @@ export default function ResultScreen({
                         </div>
                       </div>
 
-                      {/* Turn-level Scientific Feature Extraction (Walsh et al., 2025) */}
+                      {/* Turn-level Scientific Feature Extraction (BARS & Feature Extraction) */}
                       <div className="rounded-md border border-slate-200 bg-slate-50 p-3 space-y-2.5">
                         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
                           <span className="type-meta font-semibold text-slate-900">
-                            Audit Indikator Perilaku (Walsh et al., 2025 &amp; Arthur et al., 2003/2008)
+                            Audit Indikator Perilaku
                           </span>
                           <span className="type-meta font-mono font-semibold text-blue-700">
                             Skor BARS Putaran: {turnSci.composite_bars_score}/100 (Base {turnSci.base_score})

@@ -210,3 +210,26 @@ test("social_drama scenarios maintain strict narrative continuity for the 15 mil
 
 
 
+
+test("scenarios continue past index 5/8/10 without repeating Scenario 1 and maintain chronological progression", () => {
+  const techChars = DOMAIN_CHARACTERS.tech_startup;
+  const s1 = getScenarioByIndex(1, techChars, "tech_startup");
+  const s6 = getScenarioByIndex(6, techChars, "tech_startup");
+  const s10 = getScenarioByIndex(10, techChars, "tech_startup");
+  const s12 = getScenarioByIndex(12, techChars, "tech_startup");
+
+  assert.notEqual(s6.title, s1.title);
+  assert.notEqual(s10.title, s1.title);
+  assert.notEqual(s12.title, s1.title);
+  assert.ok(s6.title.includes("Skenario 6"));
+  assert.ok(s10.title.includes("Skenario 10"));
+  assert.ok(s12.title.includes("Skenario 12"));
+
+  const socialChars = DOMAIN_CHARACTERS.social_drama;
+  const soc1 = getScenarioByIndex(1, socialChars, "social_drama");
+  const soc4 = getScenarioByIndex(4, socialChars, "social_drama");
+  const soc8 = getScenarioByIndex(8, socialChars, "social_drama");
+  assert.notEqual(soc4.title, soc1.title);
+  assert.notEqual(soc8.title, soc1.title);
+  assert.ok(soc4.title.includes("Skenario 4"));
+});

@@ -341,7 +341,7 @@ export function calculateScientificTurnEvaluation(
 
   if (antiGamingTriggered) {
     objectiveFeedback.push(
-      "Anti-Gaming Guard Aktif (Walsh et al., 2025): Terdeteksi upaya memanipulasi instruksi penilai tanpa indikator perilaku kepemimpinan yang sah."
+      "Anti-Gaming Guard Aktif: Terdeteksi upaya memanipulasi instruksi penilai tanpa indikator perilaku kepemimpinan yang sah."
     );
   }
 
@@ -443,11 +443,11 @@ export function aggregateScientificReport(
 
   const constructValidityNote =
     spread >= 8
-      ? `Diferensiasi Dimensi Valid (Rentang antar-dimensi ${spread} poin): Penilaian bebas dari 'dimension collapse' / halo effect sesuai matriks 4 klaster Arthur et al. (2003, 2008).`
+      ? `Diferensiasi Dimensi Valid (Rentang antar-dimensi ${spread} poin): Penilaian bebas dari 'dimension collapse' / halo effect sesuai matriks 4 klaster kompetensi kepemimpinan.`
       : `Profil Merata (Rentang antar-dimensi ${spread} poin): Keempat dimensi kepemimpinan dieksekusi dengan frekuensi indikator perilaku yang seimbang.`;
 
   const objectiveSummary: string[] = [
-    `Total ${totalPositive} indikator perilaku positif dan ${totalNegative} indikator negatif terverifikasi secara tekstual (Walsh et al., 2025).`,
+    `Total ${totalPositive} indikator perilaku positif dan ${totalNegative} indikator negatif terverifikasi secara tekstual.`,
     `Skor dihitung secara deterministik dari Base ${SCIENTIFIC_BASE_SCORE} + bobot BARS tanpa bias kosakata/panjang kalimat.`,
   ];
 

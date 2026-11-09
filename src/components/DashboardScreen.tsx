@@ -398,11 +398,11 @@ export default function DashboardScreen({
                             <p>{item.narrative}</p>
                           </div>
 
-                          {/* Supplementary Scientific Summary (Walsh et al., 2025 & Arthur et al., 2003/2008) */}
+                          {/* Supplementary Scientific Summary (BARS & Feature Extraction & 4-Dimension Matrix) */}
                           <div className="rounded-md border border-slate-200 bg-slate-50 p-3.5 space-y-2">
                             <div className="flex flex-wrap items-center justify-between gap-2">
                               <span className="type-meta font-bold text-slate-900">
-                                Evaluasi Ilmiah Tambahan (Walsh et al., 2025 &amp; Arthur et al., 2003/2008)
+                                Evaluasi Ilmiah Tambahan (BARS &amp; Feature-Extraction)
                               </span>
                               <span className="type-meta rounded-sm border border-blue-200 bg-blue-50 px-2 py-0.5 font-mono font-bold text-blue-700">
                                 Indeks BARS: {sciReport.overall_bars_score}/100

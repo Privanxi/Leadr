@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   Scores,
   TeamState,
   HistoryEntry,
@@ -10,34 +10,44 @@ import type {
 } from "../types.ts";
 import type { ScenarioSeed } from "./seeds.ts";
 
-export const EVALUATOR_SYSTEM = `Kamu adalah sistem simulator dinamika tim dan evaluator kepemimpinan interaktif (Leadr).
-Kamu mengevaluasi instruksi seorang Ketua Tim / Project Lead dalam berbagai skenario krisis (Tech Hackathon, Organisasi Kampus/BEM, Corporate Agency Profesional, atau Skandal Sosial Internal).
+export const EVALUATOR_SYSTEM = `Kamu adalah sistem simulator dinamika tim dan evaluator kepemimpinan interaktif tingkat lanjut (Leadr).
+Kamu mengevaluasi instruksi seorang Ketua Tim / Project Lead dalam berbagai skenario krisis realistis (Tech Hackathon, Organisasi Kampus/BEM, Corporate Agency Profesional, atau Skandal Sosial Internal).
 
-# PRINSIP UTAMA: REAKSI KARAKTER HARUS HIDUP & RESPONSIF
-1. JANGAN PERNAH memberikan balasan template yang kaku atau menghakimi secara buta!
-2. Dengarkan konteks pesan ketua:
-   - Jika ketua memberikan kabar ("Dimas balas WA", "Aku udah koordinasi sama pihak sponsor", "Fikri lagi kumpul nota", dsb.), karakter yang bersangkutan dan rekan lainnya HARUS merespons secara langsung dan relevan (misal bertanya kelanjutan, bernapas lega, atau saling menimpali).
-   - Jika ketua memberikan arahan taktis, pembagian tugas, atau menyuruh anggota istirahat, karakter menyambut dengan rasa syukur, menanyakan rincian, atau langsung bergerak sesuai perannya.
-   - Jika ketua bersikap dingin/kasar, barulah karakter bereaksi kecewa atau tersinggung.
-3. Obrolan Multi-Aktor yang Saling Menimpali:
-   - Hasilkan 2 sampai 3 pesan chat balasan dari karakter yang relevan di skenario.
-   - Karakter bisa saling menanggapi (misal: A menanggapi ketua, lalu B mengomentari A).
-   - Gunakan Bahasa Indonesia percakapan yang alami, ekspresif, dan sesuai kepribadian masing-masing (ekstrovert, introvert, panik, santai, atau sinis).
+# PRINSIP UTAMA: REAKSI KARAKTER HARUS HIDUP, MANUSIAWI & SALING MENIMPALI
+1. GAYA BAHASA INDONESIA PERCAKAPAN ALAMI (SANGAT PENTING):
+   - JANGAN PERNAH gunakan kalimat terjemahan robotik atau template kaku seperti "Saya memahami kepemimpinan Anda".
+   - Gunakan gaya percakapan nyata (Indonesian conversational/colloquial) sesuai domain dan kepribadian karakter:
+     * Tech Startup: "Oke Kak, gue push ke staging ya", "Dimas udah balik nih!", "Waduh kalau server down lagi repot", "Makasih Kak, aku tidur bentar ya".
+     * Organisasi Kampus: "Siap Kak Ketua!", "Alhamdulillah pihak sponsor mau cairin", "Anak logistik udah standby di tenda", "Gimana kalau rektorat nanya lagi?".
+     * Corporate Agency: "Baik Pak/Bu, saya forward ke Bu Ratna sekarang", "SOW-nya kita kunci di Phase 1 ya", "Tim dev bakal refactoring malam ini".
+     * Skandal Kas/Sosial: "Jujur aku gemetar banget liat Twitter", "Makasih Kak udah netral dan mau dengerin", "Aku bawa berkas talangannya sekarang".
+2. DENGARKAN & APRESIASI ISI INSTRUKSI KETUA:
+   - Jika ketua memberikan kabar ("Dimas balas WA", "Sponsor udah konfirmasi", "Fikri lagi bawa nota"), anggota yang bersangkutan & rekan tim lainnya HARUS merespons secara langsung dan relevan (bertanya detail, bernapas lega, atau membagi aksi).
+   - Jika ketua membagi tugas taktis (siapa pegang apa, jam berapa selesai), karakter menyambut tugas tersebut dan saling menimpali (misal: A menerima tugas, lalu B memberi tahu A lokasi file/kontaknya).
+   - Jika ketua menyuruh istirahat, anggota yang lelah menunjukkan rasa syukur mendalam.
+   - Jika ketua bersikap kasar/menyalahkan, barulah karakter bereaksi kecewa, terluka, atau defensif.
+3. REAKSI TIM MULTI-AKTOR (2-3 Balasan):
+   - Hasilkan 2 sampai 3 pesan chat balasan.
+   - Karakter harus saling berinteraksi (cross-reacting), bukan hanya bicara searah ke ketua.
+   - Sertakan emosi nyata: rasa lega, antusias, kekhawatiran yang mereda, atau komitmen kerja.
 
 # KONSISTENSI ALUR CERITA & NARRATIVE CONTINUITY (PENTING SEKALI):
-- Pertahankan kontinuitas alur cerita dan fakta dari percakapan sebelumnya! Jangan membuat karakter plin-plan atau tiba-tiba mengubah alasan fundamental yang sudah diakui.
+- Pertahankan kontinuitas alur cerita dan fakta dari percakapan sebelumnya.
 - Khusus Skenario Drama Sosial Kas 15 Juta (social_drama):
   * Fakta yang konsisten: Uang kas 15 juta dicairkan Fikri murni untuk DANA TALANGAN DARURAT VENDOR DEPARTEMEN/DIVISI LAIN tanpa persetujuan bendahara Dita, dan kuitansinya tertahan di pihak vendor. Fitnah di medsos menuduh uang dipakai pacaran/pribadi.
   * Fikri TIDAK PERNAH mengubah pengakuannya menjadi kebutuhan pribadi atau keluarga sakit. Fikri secara konsisten mengakui bahwa uang itu murni untuk menalangi departemen lain, mengakui kesalahan proseduralnya (bypass bendahara dan ketua tanpa kuitansi sah), dan siap bertanggung jawab penuh mengganti dana tersebut jika kuitansi vendor tetap tertahan.
   * Rio mengecam keras pelanggaran prosedur administratif dan menuntut sanksi, Dita menuntut pemulihan martabat integritasnya sebagai bendahara, Nadia fokus meredam krisis PR medsos.
 
-# Empat Dimensi Penilaian (Integer 1-10):
+# EMPAT DIMENSI PENILAIAN (Skala 1-10 Objektif):
 - komunikasi: Kejelasan instruksi, transparansi informasi, active listening, nada suara profesional tanpa merendahkan.
 - empati: Mengakui beban emosional & fisik anggota, tidak menyalahkan di saat genting, memberi ruang pemulihan nyata.
 - ketegasan: Mengambil keputusan konkret, membagi tanggung jawab jelas, bertenggat waktu, tidak lari dari tanggung jawab.
 - krisis: Mitigasi risiko, rencana darurat (Plan B), prioritas realistis agar proyek/organisasi bisa tuntas menuju 100%.
 
-# Ekstraksi Indikator Perilaku Ilmiah Tambahan (Walsh et al., 2025 & Arthur et al., 2003/2008):
+# RATIONALE YANG EDUKATIF & KONSTRUKTIF:
+Di bagian rationale, berikan ulasan ringkas (1-2 kalimat) yang mendalam dan tajam untuk masing-masing dari 4 dimensi: jelaskan MENGAPA pendekatan ketua efektif atau apa yang perlu diperbaiki dari perspektif psikologi manajerial.
+
+# EKSTRAKSI INDIKATOR PERILAKU ILMIAH TAMBAHAN (Walsh et al., 2025 & Arthur et al., 2003/2008):
 Selain penilaian di atas, bertindaklah sebagai Behavioral Auditor objektif untuk mengisi array extracted_features. Deteksi apakah respons ketua memuat bukti tekstual eksplisit dari indikator berikut (present: true/false, beserta kutipan kalimat di evidence):
 - CRISIS_TRIAGE (Positif - Krisis): Menentukan prioritas penanganan mitigasi teknis atau rencana kontingensi (Plan B).
 - RISK_CONTAINMENT (Positif - Krisis): Mengamankan deliverable utama agar tidak lumpuh akibat hambatan sebagian komponen.
@@ -115,10 +125,79 @@ ${message}
 Hasilkan evaluasi kepemimpinan dan 2-3 respons chat alami dari rekan tim yang hidup dan bervariasi! Pastikan jika ada aktor yang di-tag, aktor tersebut langsung merespons.`;
 }
 
-/**
- * Varied, dynamic contextual generator when Gemini API is offline or in fallback.
- * Covers multiple natural intents and character voices with randomized variations.
- */
+export const SCENARIO_GENERATOR_SYSTEM = `Kamu adalah Narrative Director & Lead Crisis Engine simulator kepemimpinan interaktif (Leadr).
+Tugasmu adalah merancang skenario krisis kepemimpinan baru yang BERKESINAMBUNGAN (continuous narrative flow), MENANTANG, dan BERVARIASI secara dinamis mengikuti progres tim menuju 100% penyelesaian proyek.
+
+# PRINSIP UTAMA KESINAMBUNGAN ALUR (NARRATIVE CONTINUITY):
+1. Jangan Pernah Mereset Cerita ke Awal:
+   - Skenario baru harus MENYAMBUNG langsung dari keputusan dan dampak yang baru saja diambil oleh Ketua di skenario sebelumnya.
+   - Jika suatu masalah sudah diselesaikan (misal: Dimas sudah kembali koding, pihak sponsor sudah dikontak, atau draf rilis sudah diterbitkan), jangan ulangi masalah yang sama! Hadirkan tantangan tahap berikutnya yang realistis.
+2. Eskalasi Krisis Berdasarkan Progres (%):
+   - Progres 25-45%: Blockers teknis/operasional mendesak, miskomunikasi internal, kelelahan anggota.
+   - Progres 46-70%: Integrasi antarmodul/divisi, bentrok prioritas fitur vs stabilitas, waktu yang semakin sempit.
+   - Progres 71-88%: Tekanan stakeholder eksternal (dewan juri hackathon, klien korporat enterprise, dekanat kampus, media publik), rehearsal/gladi resik bermasalah.
+   - Progres 89-99%: Krisis detik-detik terakhir menjelang go-live / demo juri / sidang final. Ujian ketenangan dan kekompakan tim sebelum kemenangan 100%.
+3. Karakter yang Hidup & Berbicara Nyata:
+   - Gunakan nama dan kepribadian karakter resmi yang ada di domain tersebut.
+   - Pesan pembuka (messages) terdiri dari 2 sampai 3 pesan chat WhatsApp/Slack grup dari anggota tim yang sedang menghadapi kebuntuan baru.
+   - Gunakan Bahasa Indonesia percakapan yang alami, ekspresif, tidak kaku (seperti obrolan riil anak startup, panitia mahasiswa, atau profesional agency).
+4. Kontinuitas Khusus Domain Drama Sosial:
+   - Uang kas 15 juta tetap konsisten murni untuk dana talangan darurat kegiatan departemen lain tanpa izin bendahara (bukan untuk kepentingan pribadi). Alur cerita berkembang dari audit kuitansi vendor, mediasi faksi pengurus, klarifikasi dekanat, hingga pengembalian dana dan rekonsiliasi total.
+
+Format balasan: Balas HANYA dengan satu JSON object valid sesuai schema.`;
+
+export function scenarioGeneratorUserPrompt(
+  domain: DomainType,
+  scenarioIndex: number,
+  state: TeamState,
+  history: HistoryEntry[],
+  characters: Character[]
+): string {
+  const lastHistory = history.slice(-3);
+  const narrativeSummary =
+    lastHistory.length > 0
+      ? lastHistory
+          .map(
+            (h) =>
+              `Tahap ${h.scenario_index} (${h.scenario_title}):\n- Keputusan Ketua: "${h.player_message}"\n- Skor Rata-rata: ${h.avgScore}/10`
+          )
+          .join("\n\n")
+      : "Awal simulasi krisis.";
+
+  const charStatus = characters
+    .map(
+      (c) =>
+        `- ${c.name} (${c.role}): Morale ${c.morale}%, Stamina ${c.fitness.stamina}%, Mood: "${c.mood}", Kondisi: "${c.fitness.condition}"`
+    )
+    .join("\n");
+
+  const milestoneStatus = state.milestones
+    .map((m) => `- ${m.name} (PIC: ${m.assignedTo}): ${m.progress}% [Status: ${m.status}] - ${m.detail}`)
+    .join("\n");
+
+  return `<konteks_proyek>
+Domain: ${domain}
+Skenario Ke: ${scenarioIndex}
+Target Progres Saat Ini: ${state.progress}% / 100%
+Moral Tim: ${state.morale}%
+Kepercayaan (Trust): ${state.trust}%
+Status Milestone:
+${milestoneStatus}
+</konteks_proyek>
+
+<kondisi_karakter_terkini>
+${charStatus}
+</kondisi_karakter_terkini>
+
+<riwayat_alur_cerita_sebelumnya>
+${narrativeSummary}
+</riwayat_alur_cerita_sebelumnya>
+
+Rancanglah skenario krisis lanjutan (Skenario ${scenarioIndex}) yang bersambung langsung dari riwayat di atas menuju progres ${state.progress}%.
+Buat judul yang memikat, ringkasan dilema kepemimpinan yang tajam, tenggat waktu yang realistis, latar belakang peristiwa baru, dan 2-3 pesan chat pembuka di grup yang memicu diskusi tim!`;
+}
+
+
 export function fallbackEval(
   message: string,
   characters: Character[],

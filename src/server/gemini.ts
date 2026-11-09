@@ -9,12 +9,15 @@ import type {
   ChatMessage,
   Character,
   TurnScientificEvaluation,
+  DomainType,
 } from "../types.ts";
 import { type ScenarioSeed, getScenarioByIndex, SEEDS } from "./seeds.ts";
 import {
   EVALUATOR_SYSTEM,
   evaluatorUserPrompt,
   NARRATOR_SYSTEM,
+  SCENARIO_GENERATOR_SYSTEM,
+  scenarioGeneratorUserPrompt,
   fallbackEval,
   fallbackNarrative,
 } from "./prompts.ts";
@@ -23,13 +26,13 @@ import { calculateScientificTurnEvaluation } from "./scientificScoring.ts";
 
 /**
  * Model candidates cascade.
- * When primary model (gemini-3.8-flash) exhausts quota / hits rate limit (429) or fails,
- * the system automatically cascades to gemini-flash-latest, then gemini-3.1-flash-lite.
+ * Primary model: gemini-flash-latest, cascading to gemini-3.1-flash-lite, etc.
  */
 export const MODEL_CANDIDATES = [
-  "gemini-3.8-flash",
   "gemini-flash-latest",
   "gemini-3.1-flash-lite",
+  "gemini-flash-lite-latest",
+  "gemini-pro-latest",
 ] as const;
 
 export type SupportedModel = (typeof MODEL_CANDIDATES)[number];
@@ -48,7 +51,7 @@ export function getModelStatus() {
   };
 }
 
-const API_TIMEOUT_MS = 6000;
+const API_TIMEOUT_MS = 15000;
 
 function getGeminiClient(): GoogleGenAI | null {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -354,4 +357,113 @@ Tulis narasi reflektif 2 paragraf dan 3 rekomendasi aksi nyata.`;
   }
 
   return fallback;
+}
+
+
+export async function generateDynamicScenario(
+  domain: DomainType,
+  scenarioIndex: number,
+  state: TeamState,
+  history: HistoryEntry[],
+  characters: Character[]
+): Promise<Scenario | null> {
+  const ai = getGeminiClient();
+  if (!ai) return null;
+
+  try {
+    const prompt = scenarioGeneratorUserPrompt(domain, scenarioIndex, state, history, characters);
+    const config = {
+      systemInstruction: SCENARIO_GENERATOR_SYSTEM,
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          title: { type: Type.STRING },
+          archetype: { type: Type.STRING },
+          archetypeCode: { type: Type.STRING },
+          dilemmaSummary: { type: Type.STRING },
+          timeRemaining: { type: Type.STRING },
+          urgency: { type: Type.STRING },
+          context: { type: Type.STRING },
+          messages: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                sender: { type: Type.STRING },
+                role: { type: Type.STRING },
+                text: { type: Type.STRING },
+              },
+              required: ["sender", "text"],
+            },
+          },
+          characterVariations: {
+            type: Type.OBJECT,
+            description: "Optional character condition updates",
+          },
+        },
+        required: ["title", "dilemmaSummary", "timeRemaining", "urgency", "context", "messages"],
+      },
+    };
+
+    const { text } = await callWithModelFallback(
+      ai,
+      prompt,
+      config,
+      "Gemini dynamic scenario generation"
+    );
+
+    if (!text) return null;
+    const parsed = extractJson(text);
+    if (!parsed || !parsed.title || !Array.isArray(parsed.messages) || parsed.messages.length === 0) {
+      return null;
+    }
+
+    const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const formattedMessages: ChatMessage[] = parsed.messages.map((m: any) => ({
+      sender: String(m.sender || "Rekan Tim"),
+      role: m.role ? String(m.role) : undefined,
+      text: String(m.text || ""),
+      timestamp: now,
+    }));
+
+    const evolvedCharacters = characters.map((c) => {
+      const variation = parsed.characterVariations?.[c.name];
+      if (variation) {
+        return {
+          ...c,
+          personality: variation.personality || c.personality,
+          mood: variation.mood || c.mood,
+          fitness: {
+            ...c.fitness,
+            condition: variation.condition || c.fitness.condition,
+            stamina: variation.staminaDelta !== undefined
+              ? Math.max(0, Math.min(100, c.fitness.stamina + variation.staminaDelta))
+              : c.fitness.stamina,
+          },
+        };
+      }
+      return { ...c };
+    });
+
+    const urgencyVal: "Kritis" | "Tinggi" | "Sedang" =
+      parsed.urgency === "Kritis" || parsed.urgency === "Sedang" ? parsed.urgency : "Tinggi";
+
+    return {
+      index: scenarioIndex,
+      domain,
+      title: String(parsed.title),
+      archetype: parsed.archetype ? String(parsed.archetype) : "Dinamika Operasional & Tekanan Target",
+      archetypeCode: parsed.archetypeCode ? String(parsed.archetypeCode) : `FM-DYN-${scenarioIndex}`,
+      dilemmaSummary: String(parsed.dilemmaSummary),
+      timeRemaining: String(parsed.timeRemaining),
+      context: String(parsed.context),
+      urgency: urgencyVal,
+      messages: formattedMessages,
+      characters: evolvedCharacters,
+    };
+  } catch (err: any) {
+    console.warn(`[Leadr] Dynamic scenario generation skipped (${err?.message || err}). Menggunakan seed alur.`);
+    return null;
+  }
 }

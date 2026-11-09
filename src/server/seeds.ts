@@ -47,7 +47,7 @@ export const DOMAINS: DomainInfo[] = [
 export function getRandomDomain(): DomainType {
   const roll = Math.random();
   if (roll < 0.22) {
-    return "social_drama"; // ~22% chance of encountering the exciting Rare Social Drama!
+    return "social_drama";
   } else if (roll < 0.48) {
     return "tech_startup";
   } else if (roll < 0.74) {
@@ -977,8 +977,172 @@ export const DOMAIN_SEEDS: Record<DomainType, ScenarioSeed[]> = {
       rubricHint: "Ketua yang baik: mengambil tanggung jawab puncak kepemimpinan (tidak melempar Fikri sendirian ke hadapan dekan), menyatukan tim yang tercerai-berai untuk menghadap bersama dengan dokumen audit transparan, skema pemulihan dana kas, dan komitmen perbaikan tata kelola.",
       isRare: true,
     },
+    {
+      domain: "social_drama",
+      title: "Skenario 4: Penelusuran Fisik Nota Vendor & Fakta Transfer Talangan",
+      archetype: "Forensic Evidence Reconstruction",
+      archetypeCode: "FM-12",
+      dilemmaSummary: "Mempublikasikan bukti transfer mutasi perbankan sebelum sidang dekanat vs menunggu hasil verifikasi resmi tertulis.",
+      timeRemaining: "H-2 Jam Menuju Sidang Dekanat",
+      context: "Fikri dan Dita berhasil merekonstruksi bukti mutasi m-banking pengiriman 15 juta ke vendor panggung departemen lain, lengkap dengan surat pengakuan tertulis dari ketua panitia departemen bersangkutan. Rio memeriksa berkas tersebut dan menemukan bahwa tanggal transfer selisih beberapa hari dari tanggal penarikan kas.",
+      urgency: "Kritis",
+      messages: [
+        { sender: "Dita", role: "Staff Keuangan", text: "Kak Ketua, ini bukti mutasi m-banking Fikri ke vendor rigging departemen seni! Nominalnya pas 15 juta dan ada tanda terima panitia mereka. Jadi Fikri beneran nggak makan uangnya buat pribadi!", timestamp: "11:20" },
+        { sender: "Fikri", role: "Wakil Ketua", text: "Alhamdulillah kuitansi fisiknya udah disusulkan sama pihak panitia departemen lain. Aku siap lampirkan kronologi tertulis ini ke Pak Dekan siang ini Kak.", timestamp: "11:23" },
+        { sender: "Rio", role: "Koordinator Lapangan", text: "Bukti transfernya ada, tapi kenapa tanggalnya beda 4 hari dari kas keluar? Maladministrasinya tetap fatal dan udah viral! Kita harus buat rilis resmi sekarang juga sebelum akun gosip kampus posting lagi!", timestamp: "11:26" },
+      ],
+      rubricHint: "Ketua yang baik: mengintegrasikan seluruh bukti bukti transfer dan surat tanda terima secara transparan ke dalam dokumen investigasi resmi, menenangkan Rio, dan mengarahkan fokus ke sidang dekanat.",
+      isRare: true,
+      characterVariations: {
+        Fikri: { mood: "Lega & Bertekad Mempertanggungjawabkan", condition: "Memegang berkas bukti mutasi m-banking." },
+        Dita: { mood: "Mulai Tenang & Fokus Pembukuan", condition: "Menata arsip kuitansi rekonsiliasi kas." },
+      },
+    },
+    {
+      domain: "social_drama",
+      title: "Skenario 5: Mediasi Terbuka Pengurus Himpunan & Meredam Provokasi Faksi",
+      archetype: "Factional Truce Negotiation",
+      archetypeCode: "FM-13",
+      dilemmaSummary: "Menonaktifkan sementara Fikri dari kepengurusan demi meredam gejolak kubu Rio vs mempertahankan Fikri untuk menyelesaikan pertanggungjawaban.",
+      timeRemaining: "H-1 Jam Menuju Sidang Dekanat",
+      context: "Ruang sekretariat dipadati perwakilan angkatan yang terbelah menjadi dua kubu. Kubu Rio menuntut penonaktifan Fikri secara instan, sedangkan kubu pendukung Fikri menolak karena Fikri berniat baik menolong kegiatan fakultas.",
+      urgency: "Kritis",
+      messages: [
+        { sender: "Rio", role: "Koordinator Lapangan", text: "Kalau ketua nggak berani nonaktifkan Fikri sementara audit berjalan, angkatan kami walk-out dari kepengurusan hari ini juga!", timestamp: "12:15" },
+        { sender: "Fikri", role: "Wakil Ketua", text: "Teman-teman tolong jangan terpecah! Aku sukarela meletakkan jabatan wakil ketua asalkan himpunan ini nggak pecah dan nggak dibekukan Dekanat...", timestamp: "12:18" },
+        { sender: "Dita", role: "Staff Keuangan", text: "Jangan ada yang walk-out! Bukti sudah lengkap, kita harus satu suara di hadapan pimpinan Dekanat nanti jam 2 siang!", timestamp: "12:20" },
+      ],
+      rubricHint: "Ketua yang baik: menolak ancaman walk-out secara tegas namun tenang, menetapkan status nonaktif sementara bagi Fikri dengan penghormatan asas praduga tak bersalah, dan menyatukan seluruh elemen menuju sidang.",
+      isRare: true,
+    },
+    {
+      domain: "social_drama",
+      title: "Skenario 6: Pernyataan Resmi Transparansi ke Medsos & Tekanan Pers Mahasiswa",
+      archetype: "Crisis PR & Public Vindication",
+      archetypeCode: "FM-14",
+      dilemmaSummary: "Merilis kronologi lengkap bukti dana talangan ke publik media sosial saat ini juga vs menahan rilis hingga keputusan dekanat keluar.",
+      timeRemaining: "15 Menit Sebelum Masuk Ruang Sidang Dekanat",
+      context: "Wartawan Lembaga Pers Mahasiswa (LPM) kampus telah berkumpul di lobi gedung dekanat untuk mewawancarai ketua himpunan secara live streaming. Nadia telah merancang draf klarifikasi transparan.",
+      urgency: "Tinggi",
+      messages: [
+        { sender: "Nadia", role: "Divisi Media", text: "Kak Ketua, wartawan Persma udah nunggu di lobi rektorat! Draf press release transparansi mutasi 15 juta udah siap kupublish. Apakah kita rilis sekarang sebelum masuk ruangan Dekan?", timestamp: "13:40" },
+        { sender: "Dita", role: "Staff Keuangan", text: "Lampiran bukti transfer vendor dan surat pernyataan panitia departemen lain udah lengkap terjilid rapi di map merah Kak.", timestamp: "13:42" },
+      ],
+      rubricHint: "Ketua yang baik: memberikan pernyataan singkat yang tenang dan profesional kepada pers kampus bahwa investigasi telah selesai dengan bukti lengkap, dan rilis komprehensif akan diterbitkan tepat pasca-sidang dekanat.",
+      isRare: true,
+    },
+    {
+      domain: "social_drama",
+      title: "Skenario 7: Sidang Pleno Dekanat & Pengembalian Dana Talangan",
+      archetype: "The Institutional Reckoning",
+      archetypeCode: "FM-21",
+      dilemmaSummary: "Menyetujui skema pengembalian dana bertahap dengan jaminan kas organisasi vs menuntut departemen peminjam melunasi langsung.",
+      timeRemaining: "Di Hadapan Sidang Pimpinan Fakultas",
+      context: "Dekan Kemahasiswaan mengapresiasi transparansi pembuktian bahwa uang 15 juta murni untuk talangan darurat kegiatan mahasiswa dan bukan korupsi pribadi. Namun, dekanat mewajibkan dana dikembalikan utuh ke kas dalam 7 hari dan menetapkan sanksi administratif teguran tertulis bagi pelanggaran prosedur.",
+      urgency: "Tinggi",
+      messages: [
+        { sender: "Fikri", role: "Wakil Ketua", text: "Pak Dekan sudah membaca seluruh berkas kita. Beliau setuju organisasi TIDAK DIBEKUKAN, tapi dana 15 juta talangan harus diselesaikan pembukuannya dalam 7 hari. Kak Ketua, aku berjanji mengawal pengembalian dari departemen lain sampai lunas!", timestamp: "15:10" },
+        { sender: "Rio", role: "Koordinator Lapangan", text: "Gue akui keterbukaan data kalian di depan Dekan bikin pimpinan fakultas tenang. Gue minta maaf kalau sempat terlampau emosi di grup...", timestamp: "15:13" },
+      ],
+      rubricHint: "Ketua yang baik: menyambut keputusan dekanat dengan lapang dada, menyusun komitmen pengembalian dana tertulis, dan merangkul kembali Rio dan seluruh faksi untuk bekerja sama.",
+      isRare: true,
+    },
+    {
+      domain: "social_drama",
+      title: "Skenario 8: Rekonsiliasi Internal, Permohonan Maaf & Pemulihan Martabat",
+      archetype: "Post-Crisis Restoration",
+      archetypeCode: "FM-22",
+      dilemmaSummary: "Memulihkan hubungan persahabatan dan keharmonisan tim pasca-badai krisis sosial tanpa menyisakan dendam.",
+      timeRemaining: "Malam Hari Pasca-Sidang",
+      context: "Pernyataan resmi transparansi yang diposting Nadia di Twitter/X dan Instagram mendapatkan respons positif luar biasa dari mahasiswa kampus; fitnah korupsi mereda total dan netizen memuji akuntabilitas himpunan.",
+      urgency: "Sedang",
+      messages: [
+        { sender: "Dita", role: "Staff Keuangan", text: "Alhamdulillah nama baikku dan himpunan pulih total Kak Ketua! Menfess di Twitter sekarang pada respect sama keterbukaan kita.", timestamp: "18:30" },
+        { sender: "Fikri", role: "Wakil Ketua", text: "Terima kasih banyak Kak Ketua udah mimpin kita melewati badai terbesar ini dengan adil dan kepala dingin. Pelajaran seumur hidup buat aku.", timestamp: "18:33" },
+        { sender: "Rio", role: "Koordinator Lapangan", text: "Malam ini kita buktikan himpunan ini nggak hancur, malah jadi 10x lebih solid. Siap dukung reformasi SOP baru!", timestamp: "18:35" },
+      ],
+      rubricHint: "Ketua yang baik: memimpin momen rekonsiliasi yang emosional dan bermartabat, memulihkan kepercayaan di antara anggota, dan menegaskan komitmen perbaikan.",
+      isRare: true,
+    },
+    {
+      domain: "social_drama",
+      title: "Skenario 9: Reformasi SOP Keuangan & Pemulihan Kepercayaan 100%",
+      archetype: "Institutional Rebirth",
+      archetypeCode: "FM-23",
+      dilemmaSummary: "Menetapkan sistem tata kelola keuangan baru yang tahan uji untuk kepengurusan di masa depan.",
+      timeRemaining: "Musyawarah Pleno Akhir",
+      context: "Musyawarah luar biasa pengurus menetapkan SOP keuangan modern dengan multi-signature authorization, dashboard keterbukaan kas publik, dan sistem pelaporan talangan darurat resmi. Krisis terselesaikan 100% tuntas.",
+      urgency: "Sedang",
+      messages: [
+        { sender: "Nadia", role: "Divisi Media", text: "Dashboard transparansi kas online kita udah live Kak! Seluruh anggota fakultas bisa pantau arus kas secara real-time.", timestamp: "20:00" },
+        { sender: "Dita", role: "Staff Keuangan", text: "SOP baru sudah ditandatangani Fikri, Rio, dan seluruh ketua departemen. Progres pemulihan organisasi kita sudah 100% tuntas!", timestamp: "20:03" },
+      ],
+      rubricHint: "Ketua yang baik: meresmikan SOP baru dengan penuh kebanggaan dan merayakan ketangguhan kepemimpinan kolektif seluruh anggota tim.",
+      isRare: true,
+    },
   ],
 };
+
+function generateProceduralContinuationScenario(
+  index: number,
+  characters: Character[],
+  domain: DomainType
+): Scenario {
+  const titles: Record<DomainType, string[]> = {
+    tech_startup: [
+      `Skenario ${index}: Hardening Server & Optimasi Latensi Final`,
+      `Skenario ${index}: Simulasi Pertanyaan Dewan Juri & Pitching Sempurna`,
+      `Skenario ${index}: Menjelang Garis Akhir Hackathon & Final Deliverable`,
+    ],
+    campus_org: [
+      `Skenario ${index}: Manajemen Arus Massa & Keamanan Panggung Penutupan`,
+      `Skenario ${index}: Debrief Sponsor & Konsolidasi Keuangan Akhir`,
+      `Skenario ${index}: Puncak Acara & Sukses Akbar Festival Kampus`,
+    ],
+    corporate_agency: [
+      `Skenario ${index}: Final Acceptance Testing & Verifikasi SLA Enterprise`,
+      `Skenario ${index}: Handover Knowledge Transfer & Transisi Tim Support`,
+      `Skenario ${index}: Sign-Off Kontrak 400 Juta & Perayaan Kesuksesan Klien`,
+    ],
+    social_drama: [
+      `Skenario ${index}: Evaluasi Tata Kelola Kas & Penguatan Dewan Kehormatan`,
+      `Skenario ${index}: Harmonisasi Antaranggotan & Pemulihan Hubungan Sosial`,
+      `Skenario ${index}: Babak Baru Organisasi Mahasiswa yang Berintegritas Penuh`,
+    ],
+  };
+
+  const domainTitles = titles[domain] || titles.tech_startup;
+  const pickedTitle = domainTitles[(index - 1) % domainTitles.length];
+  const char1 = characters[0] || { name: "Rekan Tim", role: "Koordinator" };
+  const char2 = characters[1] || { name: "Anggota", role: "Pelaksana" };
+
+  return {
+    index,
+    domain,
+    title: pickedTitle,
+    archetype: "Late-Stage Sprint & Final Push",
+    archetypeCode: `FM-SPRINT-${index}`,
+    dilemmaSummary: "Menjaga stamina tim dan konsistensi kualitas deliverable di fase akhir proyek agar target 100% tercapai dengan integritas tinggi.",
+    timeRemaining: `Fase Akhir Proyek (Tahap ${index})`,
+    context: `Proyek kini berada di fase puncak penyelesaian. Tantangan saat ini adalah mempertahankan fokus eksekusi, mencegah keletihan mental di garis akhir, dan menuntaskan sisa milestone hingga 100% tuntas.`,
+    urgency: "Tinggi",
+    messages: [
+      {
+        sender: char1.name,
+        role: char1.role,
+        text: `Kak Ketua, kita sudah mendekati garis finish tahap akhir! Ada sisa penyesuaian minor di deliverable kita. Bagaimana arahan final untuk pembagian beban kerja sebelum penutupan resmi?`,
+        timestamp: "19:00",
+      },
+      {
+        sender: char2.name,
+        role: char2.role,
+        text: `Semua anggota tim siap all-out di putaran ini Kak. Kita butuh arahan prioritas terakhir dari ketua agar tidak ada detail penting yang terlewat!`,
+        timestamp: "19:02",
+      },
+    ],
+    characters: characters.map((c) => ({ ...c })),
+  };
+}
 
 export function getScenarioByIndex(
   index: number,
@@ -986,43 +1150,47 @@ export function getScenarioByIndex(
   domain: DomainType = "tech_startup"
 ): Scenario {
   const seeds = DOMAIN_SEEDS[domain] || DOMAIN_SEEDS.tech_startup;
-  const seedIndex = (index - 1) % seeds.length;
-  const seed = seeds[seedIndex];
 
-  // Dynamically evolve character personality and background for this specific scenario
-  const evolvedCharacters = characters.map((c) => {
-    const variation = seed.characterVariations?.[c.name];
-    if (variation) {
-      return {
-        ...c,
-        personality: variation.personality || c.personality,
-        mood: variation.mood || c.mood,
-        fitness: {
-          ...c.fitness,
-          condition: variation.condition || c.fitness.condition,
-          stamina: variation.staminaDelta !== undefined
-            ? Math.max(0, Math.min(100, c.fitness.stamina + variation.staminaDelta))
-            : c.fitness.stamina,
-        },
-      };
-    }
-    return { ...c };
-  });
+  if (index <= seeds.length) {
+    const seed = seeds[index - 1];
+    const evolvedCharacters = characters.map((c) => {
+      const variation = seed.characterVariations?.[c.name];
+      if (variation) {
+        return {
+          ...c,
+          personality: variation.personality || c.personality,
+          mood: variation.mood || c.mood,
+          fitness: {
+            ...c.fitness,
+            condition: variation.condition || c.fitness.condition,
+            stamina: variation.staminaDelta !== undefined
+              ? Math.max(0, Math.min(100, c.fitness.stamina + variation.staminaDelta))
+              : c.fitness.stamina,
+          },
+        };
+      }
+      return { ...c };
+    });
 
-  return {
-    index,
-    domain,
-    title: seed.title,
-    archetype: seed.archetype,
-    archetypeCode: seed.archetypeCode,
-    dilemmaSummary: seed.dilemmaSummary,
-    timeRemaining: seed.timeRemaining,
-    context: seed.context,
-    urgency: seed.urgency,
-    messages: seed.messages.map((m) => ({ ...m })),
-    characters: evolvedCharacters,
-    isRare: seed.isRare,
-  };
+    return {
+      index,
+      domain,
+      title: seed.title,
+      archetype: seed.archetype,
+      archetypeCode: seed.archetypeCode,
+      dilemmaSummary: seed.dilemmaSummary,
+      timeRemaining: seed.timeRemaining,
+      context: seed.context,
+      urgency: seed.urgency,
+      messages: seed.messages.map((m) => ({ ...m })),
+      characters: evolvedCharacters,
+      isRare: seed.isRare,
+    };
+  }
+
+  // Procedural continuous late-stage scenario for index > seeds.length:
+  // Never loops back to scenario 1! Seamlessly leads toward 100% completion.
+  return generateProceduralContinuationScenario(index, characters, domain);
 }
 
 export const INITIAL_CHARACTERS = DOMAIN_CHARACTERS.tech_startup;
